@@ -1,0 +1,497 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Workshop Mobbing – Gruppe 4</title>
+<style>
+  :root {
+    --blue: #1F3864; --blue2: #2E5496; --light: #DCE6F2; --bg: #F5F7FB; --card: #FFFFFF;
+    --ink: #222; --muted: #5f6368; --line: #C9D3E3;
+    --green: #3B7D4F; --greenbg: #E3F1E7; --amber: #9A6B12; --amberbg: #F8EDD5; --red: #A23B32; --redbg: #F6E3E1;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { margin: 0; font-family: Calibri, "Segoe UI", Arial, sans-serif; font-size: 17px; line-height: 1.5; color: var(--ink); background: var(--bg); }
+  header { background: var(--blue); color: #fff; padding: 14px 16px 0; position: sticky; top: 0; z-index: 10; }
+  .head-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; max-width: 1100px; margin: 0 auto; }
+  header h1 { font-size: 20px; margin: 0; font-weight: 700; }
+  #status { font-size: 13px; padding: 3px 10px; border-radius: 12px; background: rgba(255,255,255,.15); white-space: nowrap; }
+  #status.ok { background: #2f7a49; } #status.err { background: #a23b32; } #status.busy { background: #9a6b12; }
+  nav { display: flex; gap: 4px; overflow-x: auto; max-width: 1100px; margin: 10px auto 0; scrollbar-width: none; }
+  nav::-webkit-scrollbar { display: none; }
+  nav a { color: #DCE6F2; text-decoration: none; padding: 9px 14px; border-radius: 8px 8px 0 0; white-space: nowrap; font-weight: 600; font-size: 16px; }
+  nav a.active { background: var(--bg); color: var(--blue); }
+  main { max-width: 1100px; margin: 0 auto; padding: 20px 16px 60px; }
+  section.page { display: none; } section.page.active { display: block; }
+  h2 { color: var(--blue); font-size: 28px; margin: 4px 0 6px; line-height: 1.2; }
+  h3 { color: var(--blue); font-size: 20px; margin: 22px 0 8px; }
+  .sub { color: var(--muted); margin: 0 0 18px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; margin: 0 0 16px; }
+  .card.tint { background: #EEF3FA; border-color: #2E5496; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+  .grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  @media (max-width: 800px) { .grid3, .grid2 { grid-template-columns: 1fr; } h2 { font-size: 24px; } }
+  @media (max-width: 480px) { header h1 { font-size: 16px; } #status { font-size: 12px; padding: 2px 8px; } }
+  .big-btn { display: block; text-decoration: none; color: var(--blue); background: var(--card); border: 2px solid var(--blue2); border-radius: 12px; padding: 16px; font-weight: 700; font-size: 20px; }
+  .big-btn small { display: block; font-weight: 400; color: var(--muted); font-size: 15px; margin-top: 2px; }
+  .phase { border-radius: 12px; padding: 14px 16px; border: 2px solid; }
+  .phase.g { border-color: var(--green); background: var(--greenbg); } .phase.g b.t { color: var(--green); }
+  .phase.a { border-color: var(--amber); background: var(--amberbg); } .phase.a b.t { color: var(--amber); }
+  .phase.r { border-color: var(--red); background: var(--redbg); } .phase.r b.t { color: var(--red); }
+  ul { margin: 6px 0; padding-left: 22px; } li { margin: 3px 0; }
+  .src { font-size: 13px; color: var(--muted); margin-top: 18px; }
+  .case p { font-size: 18px; margin: 0 0 12px; }
+  .case .titel { font-style: italic; color: var(--blue2); font-size: 20px; margin-bottom: 14px; }
+  .hilfe { font-size: 15.5px; }
+  .hilfe li { margin: 4px 0; }
+  details.hilfe-d > summary { cursor: pointer; font-weight: 700; color: var(--blue); font-size: 17px; }
+  /* worksheet */
+  .ws .q { background: var(--light); color: var(--blue); font-weight: 700; padding: 9px 14px; border-radius: 10px 10px 0 0; }
+  .ws .box { background: var(--card); border: 1px solid var(--line); border-top: 0; border-radius: 0 0 10px 10px; padding: 12px 14px; margin-bottom: 16px; }
+  .ws label.lbl { display: block; font-weight: 600; margin: 8px 0 4px; }
+  .ws .hint { font-size: 14px; color: #6b6b6b; font-style: italic; margin: 2px 0 6px; }
+  .checks { display: flex; flex-wrap: wrap; gap: 8px 10px; }
+  .checks label { display: inline-flex; align-items: center; gap: 7px; padding: 7px 12px; border: 1px solid var(--line); border-radius: 20px; cursor: pointer; user-select: none; background: #fff; font-size: 16px; }
+  .checks input { width: 19px; height: 19px; accent-color: var(--blue2); margin: 0; }
+  .checks label.on { background: #EEF3FA; border-color: var(--blue2); font-weight: 700; color: var(--blue); }
+  .checks .sep { flex-basis: 100%; height: 0; }
+  textarea, input.inline { width: 100%; font: inherit; font-size: 16px; border: 1px solid #b9c4d6; border-radius: 8px; padding: 9px 10px; background: #fff; color: var(--ink); resize: vertical; }
+  textarea:focus, input.inline:focus { outline: 3px solid #b8cdee; border-color: var(--blue2); }
+  input.inline { width: 200px; display: inline-block; padding: 5px 8px; }
+  textarea.r3 { min-height: 90px; } textarea.r5 { min-height: 140px; } textarea.r2 { min-height: 62px; }
+  .flash { animation: flash 1.2s ease-out; }
+  @keyframes flash { from { background: #fff4c2; } to { background: #fff; } }
+  .savebar { font-size: 14px; color: var(--muted); margin: -4px 0 16px; }
+  /* compare */
+  .cmp-col h3 { margin-top: 0; }
+  .cmp-col .pill { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 14px; font-weight: 700; margin-left: 6px; vertical-align: middle; }
+  .cmp-item { margin: 8px 0; }
+  .cmp-item .k { font-size: 13px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); font-weight: 700; }
+  .cmp-item .v { white-space: pre-wrap; }
+  .cmp-item .v.empty { color: #a0a6b0; font-style: italic; }
+  .key { background: var(--light); border-left: 6px solid var(--blue); padding: 12px 16px; font-weight: 700; color: var(--blue); font-size: 19px; border-radius: 6px; margin: 6px 0 16px; }
+  button { font: inherit; font-size: 16px; border-radius: 8px; padding: 9px 16px; border: 1px solid var(--blue2); background: var(--blue2); color: #fff; cursor: pointer; }
+  button.ghost { background: #fff; color: var(--blue2); }
+  button.danger { background: #fff; color: var(--red); border-color: var(--red); }
+  .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  #banner { display: none; margin: 0 0 16px; padding: 12px 16px; border-radius: 10px; background: var(--redbg); border: 1px solid var(--red); color: #5a1d18; }
+  a { color: var(--blue2); }
+  @media print {
+    header, nav, .noprint, #banner { display: none !important; }
+    body { background: #fff; font-size: 12pt; }
+    section.page { display: none !important; } section.page.print-me { display: block !important; }
+    .grid3 { grid-template-columns: repeat(3, 1fr); }
+    .card { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="head-row">
+    <h1>Workshop Mobbing · Gruppe 4</h1>
+    <span id="status" class="busy">verbinde …</span>
+  </div>
+  <nav id="nav">
+    <a href="#start">Start</a>
+    <a href="#infos">Infos</a>
+    <a href="#fallA">Fall A</a>
+    <a href="#fallB">Fall B</a>
+    <a href="#fallC">Fall C</a>
+    <a href="#vergleich">Vergleich</a>
+  </nav>
+</header>
+
+<main>
+  <div id="banner"></div>
+
+  <!-- START -->
+  <section class="page" id="p-start">
+    <h2>Willkommen zum Transfer</h2>
+    <p class="sub">Vom Erkennen zum Handeln: Was tun wir als Lehrkraft, wenn wir Mobbing erkennen?</p>
+    <div class="card tint">
+      <b>So geht ihr vor (12 Minuten)</b>
+      <ol style="margin:8px 0 0;padding-left:22px">
+        <li>Öffnet oben den Fall eurer Gruppe: <b>1 = Fall A · 2 = Fall B · 3 = Fall C</b>.</li>
+        <li>Lest den Fall (ca. 2 Min.) und bearbeitet die drei Leitfragen direkt auf der Seite.</li>
+        <li>Alles wird automatisch gespeichert. Alle in eurer Gruppe sehen sofort, was eingetragen wird – ihr könnt also gemeinsam schreiben.</li>
+        <li>Danach stellt jede Gruppe in ca. 2 Minuten vor: Worum geht es? In welcher Phase ist das Mobbing – und woran erkennt ihr das? Was ist eure wichtigste Maßnahme?</li>
+      </ol>
+    </div>
+    <div class="grid3">
+      <a class="big-btn" href="#fallA">Fall A · Klasse 5c<small>Neue Klasse, neue Sprüche</small></a>
+      <a class="big-btn" href="#fallB">Fall B · Klasse 7b<small>Die „echte“ Klassengruppe</small></a>
+      <a class="big-btn" href="#fallC">Fall C · Klasse 8a<small>„War doch nur Spaß“</small></a>
+    </div>
+    <p style="margin-top:16px">Unter <a href="#infos">Infos</a> findet ihr die wichtigsten Grundlagen aus unserem Handout. Unter <a href="#vergleich">Vergleich</a> seht ihr am Ende alle drei Ergebnisse nebeneinander.</p>
+    <p class="src">Bitte keine Namen oder persönlichen Daten eintragen – gespeichert werden nur eure Antworten zu den Fällen.</p>
+  </section>
+
+  <!-- INFOS -->
+  <section class="page" id="p-infos">
+    <h2>Infos: Mobbing erkennen und handeln</h2>
+    <p class="sub">Die Grundlagen aus unserem Handout</p>
+
+    <div class="grid2">
+      <div class="card">
+        <h3 style="margin-top:0">Drei Bestimmungsmerkmale</h3>
+        <ul>
+          <li><b>Wiederholungsaspekt:</b> wiederholt und über einen längeren Zeitraum</li>
+          <li><b>Verletzungsabsicht:</b> die Täter:innen wollen das Opfer schädigen</li>
+          <li><b>Machtungleichgewicht:</b> das Opfer kann sich nicht aus eigener Kraft wehren</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 style="margin-top:0">Abgrenzung: Mobbing vs. …</h3>
+        <p style="margin:0">Aggression · Gewalt · Kampf- und Tobspiele · Necken · Belästigungen</p>
+      </div>
+    </div>
+
+    <h3>Mobbingprozess: drei zentrale Phasen (nach Schäfer, 2003)</h3>
+    <div class="grid3">
+      <div class="phase g"><b class="t">1. Explorationsphase</b><br>Angriffe auf unterschiedliche Personen, Austesten des „geeigneten“ Opfers<br><b class="t">→ präventive Maßnahmen effektiv</b></div>
+      <div class="phase a"><b class="t">2. Konsolidierungsphase</b><br>Vermehrtes Attackieren des ausgewählten Opfers, soziale Herabsetzung<br><b class="t">→ zu Beginn kann Prävention noch stoppen, bei fortgeschrittener Phase Intervention</b></div>
+      <div class="phase r"><b class="t">3. Manifestationsphase</b><br>Mobbing-Struktur und -Beteiligung gefestigt, die soziale Norm der Mitschüler:innen ist manipuliert<br><b class="t">→ Intervention notwendig</b></div>
+    </div>
+
+    <h3>Erscheinungs- und Interaktionsformen</h3>
+    <div class="card">
+      <ul>
+        <li><b>Physisches Mobbing:</b> alle Handlungen mit dem Ziel, eine Person körperlich zu verletzen</li>
+        <li><b>Verbales Mobbing:</b> sämtliche verbalen Attacken (verletzende Spitznamen, verbale Drohungen …)</li>
+        <li><b>Relationales Mobbing:</b> Angreifen und Zerstören sozialer Beziehungen, der sozialen Zugehörigkeit und Akzeptanz</li>
+        <li><b>Cybermobbing:</b> Mobbing über digitale Medien, z. B. Ausschluss aus Online-Gruppen, Verbreiten und Lächerlichmachen von Nachrichten oder Bildern</li>
+      </ul>
+      <p style="margin:8px 0 0"><b>Direkt</b> = unmittelbar gegen das Opfer gerichtet · <b>Indirekt</b> = über Dritte oder hinter dem Rücken des Opfers (z. B. lästern, Gerüchte verbreiten)</p>
+    </div>
+
+    <h3>Mögliche Warnsignale für Lehrkräfte</h3>
+    <div class="card">
+      <ul>
+        <li>Verletzungen am Körper, zerrissene oder schmutzige Kleidung</li>
+        <li>beim Essen oder in den Pausen oft allein</li>
+        <li>plötzlicher Leistungsabfall</li>
+        <li>wird bei Lern- und Arbeitsgruppen eher gemieden</li>
+      </ul>
+    </div>
+
+    <h3>Handeln als Lehrkraft: Drei-Phasen-Modell zur Intervention</h3>
+    <div class="grid3">
+      <div class="card"><b style="color:var(--blue)">1 · Erstverhalten</b>
+        <ul><li>Situation abbrechen, Opfer schützen</li><li>aufklären und bewerten, ob es Mobbing ist</li><li>Erstschutz sichern, Vertrauen aufbauen</li></ul></div>
+      <div class="card"><b style="color:var(--blue)">2 · Hauptintervention</b>
+        <ul><li>Vorgehen planen</li><li>Kooperationspartner hinzuziehen (Kolleg:innen, Schulsozialarbeit, Schulleitung, Eltern)</li><li>Gespräche mit den Beteiligten</li><li>Schülerunterstützer hinzuziehen</li><li>Aufarbeitung eng begleiten</li></ul></div>
+      <div class="card"><b style="color:var(--blue)">3 · Nachbereitung / Erfolgskontrolle</b>
+        <ul><li>Maßnahmen überprüfen und Nachhaltigkeit sichern (wirkt es nicht: zurück zur Planung)</li><li>präventive Anschlussmaßnahmen</li></ul></div>
+    </div>
+    <div class="key">Merksätze: Opferschutz geht vor · Nicht allein handeln · Nicht bloßstellen</div>
+    <p>Präventionsprogramme – Empfehlungsliste: <a href="https://www.gruene-liste-praevention.de/nano.cms/datenbank/alle" target="_blank" rel="noopener">Grüne Liste Prävention</a></p>
+    <p class="src">Quelle: Wachs, S., Hess, M., Scheithauer, H. &amp; Schubarth, W. (2016). Mobbing an Schulen: Erkennen – Handeln – Vorbeugen. Kohlhammer.</p>
+  </section>
+
+  <!-- FÄLLE (werden per Script befüllt) -->
+  <section class="page" id="p-fallA"></section>
+  <section class="page" id="p-fallB"></section>
+  <section class="page" id="p-fallC"></section>
+
+  <!-- VERGLEICH -->
+  <section class="page" id="p-vergleich">
+    <h2>Vergleich: Die Phase entscheidet</h2>
+    <p class="sub">Die Ergebnisse aller drei Gruppen – aktualisiert sich live.</p>
+    <div class="grid3" id="cmp"></div>
+    <div class="key">Je früher wir hinschauen, desto eher reicht Prävention.</div>
+    <div class="card noprint">
+      <b>Für uns (Gruppe 4)</b>
+      <div class="row" style="margin-top:8px">
+        <button id="btn-export">Ergebnisse als Word-Datei herunterladen</button>
+        <button class="ghost" id="btn-print">Drucken / als PDF speichern</button>
+        <button class="danger" id="btn-reset">Alle Eintragungen löschen</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script type="module">
+// ---------------- Konfiguration ----------------
+const firebaseConfig = {
+  apiKey: "AIzaSyBtTvVSg_fxwU_4ul-akJbfY8cK6JL9C7s",
+  authDomain: "workshop-thema-4-mobbing.firebaseapp.com",
+  projectId: "workshop-thema-4-mobbing",
+  storageBucket: "workshop-thema-4-mobbing.firebasestorage.app",
+  messagingSenderId: "625863994361",
+  appId: "1:625863994361:web:63ad9a4b8bee2ade22eb28"
+};
+const SDK = "https://www.gstatic.com/firebasejs/10.12.2/";
+
+// ---------------- Inhalte ----------------
+const FAELLE = {
+  A: { klasse: "Klasse 5c", titel: "Neue Klasse, neue Sprüche", text: [
+      "Die 5c ist seit den Sommerferien neu zusammengesetzt. Sie sind die Klassenlehrkraft.",
+      "In den letzten Wochen fällt Ihnen auf, dass Noah und zwei Freunde in den Pausen und vor dem Unterricht Sprüche über Mitschüler:innen machen: Mal geht es um Maries Brille, mal um Max’ Turnschuhe, mal um Finns Frisur. Wer sich wehrt oder einfach zurückfrotzelt, wird meist schnell in Ruhe gelassen.",
+      "Seit letzter Woche trifft es auffällig oft Finn. Er wird rot, sagt nichts und lacht unsicher mit. Einige aus der Klasse lachen ebenfalls, die meisten schauen weg.",
+      "Gestern hat Finn Sie nach der Stunde gefragt, ob er sich im Unterricht woanders hinsetzen darf."],
+    hilfe: ["Warum wechseln die Ziele von Noah und seinen Freunden?", "Was könnte passieren, wenn niemand reagiert?", "Was könnt ihr mit der ganzen Klasse machen?"] },
+  B: { klasse: "Klasse 7b", titel: "Die „echte“ Klassengruppe", text: [
+      "Nach einer Unterrichtsstunde spricht Sie eine Schülerin der 7b leise an. Seit den Herbstferien gebe es eine neue WhatsApp-Gruppe „7b – die Echten“, in der alle außer Hannah sind. Dort würden Screenshots von Hannahs Nachrichten aus dem alten Klassenchat geteilt und lächerlich gemacht. Angefangen hätten Lea und Mira, inzwischen machten immer mehr mit.",
+      "Ihnen fällt auf, dass Hannah in den Pausen meist allein steht und dass bei Gruppenarbeiten niemand mit ihr zusammenarbeiten möchte. Im Unterricht meldet sie sich kaum noch.",
+      "Die Schülerin bittet Sie, niemandem zu sagen, dass sie es Ihnen erzählt hat."],
+    hilfe: ["Wie schützt ihr die Schülerin, die es euch erzählt hat?", "Reicht ein Gespräch mit der ganzen Klasse?", "Wer könnte euch unterstützen?"] },
+  C: { klasse: "Klasse 8a", titel: "„War doch nur Spaß“", text: [
+      "David ist in der 8a. Seit Beginn des letzten Schuljahres wird er immer wieder geschubst, sein Rucksack wird ausgekippt, letzte Woche kam er mit zerrissener Jacke aus der Pause. Fast alle in der Klasse nennen ihn nur noch „Opfer“ – auch Schüler:innen, die anfangs nicht mitgemacht haben.",
+      "Wenn eine Lehrkraft etwas sagt, heißt es: „War doch nur Spaß“, und David nickt. In letzter Zeit fehlt er häufig montags, seine Noten sind in mehreren Fächern deutlich abgerutscht.",
+      "Beim Elternsprechtag fragt sein Vater Sie als Klassenlehrkraft, ob in der Klasse alles in Ordnung sei. Im Lehrerzimmer stellt sich heraus: Mehrere Kolleg:innen haben einzelne Vorfälle bemerkt, aber niemand hat sie bisher zusammengetragen."],
+    hilfe: ["Warum reicht ein Klassengespräch hier nicht mehr?", "Was antwortet ihr dem Vater?", "Wer muss alles Bescheid wissen?"] },
+};
+const FORMEN = ["physisch", "verbal", "relational", "Cybermobbing"];
+const RICHTUNG = ["direkt", "indirekt"];
+const PHASEN = ["Explorationsphase", "Konsolidierungsphase", "Manifestationsphase"];
+const SCHWERPUNKT = ["Prävention", "Intervention"];
+// Textfelder (Firestore-Feldnamen) und Beschriftungen für Vergleich/Export
+const TEXT_FIELDS = ["form_why", "phase_why", "notizen", "praev", "interv", "begr_phase", "begr_denn", "erstes", "wichtig"];
+const CHECK_FIELDS = { form: FORMEN.concat(RICHTUNG), phase: PHASEN, begr_cb: SCHWERPUNKT };
+
+const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+function checks(field, groups) {
+  return `<div class="checks" data-field="${field}">` + groups.map((g, gi) =>
+    (gi ? '<span class="sep"></span>' : "") + g.map((v) =>
+      `<label><input type="checkbox" value="${esc(v)}"> ${esc(v)}</label>`).join("")).join("") + "</div>";
+}
+
+function fallPage(id) {
+  const f = FAELLE[id];
+  return `
+  <h2>Fall ${id} · ${f.klasse}</h2>
+  <div class="card case">
+    <div class="titel">${esc(f.titel)}</div>
+    ${f.text.map((t) => `<p>${esc(t)}</p>`).join("")}
+  </div>
+  <div class="card tint hilfe">
+    <details class="hilfe-d"><summary>Hilfekasten (antippen zum Öffnen)</summary>
+    <ul>
+      <li><b>Faustregel:</b> Je früher die Phase, desto eher reicht Prävention. Je weiter fortgeschritten, desto mehr Intervention.</li>
+      <li><b>Beispiele für Prävention:</b> Klassenregeln gegen Mobbing · Klassenrat · soziales Lernen · ein Präventionsprogramm mit der ganzen Klasse</li>
+      <li><b>Drei-Phasen-Modell (Intervention):</b> 1. Erstverhalten: abbrechen, schützen, aufklären · 2. Hauptintervention: planen, Kooperationspartner, Gespräche, Schülerunterstützer, eng begleiten · 3. Nachbereitung: überprüfen, Nachhaltigkeit sichern, Prävention</li>
+      <li><b>Merksätze:</b> Opferschutz geht vor · nicht allein handeln · nicht bloßstellen</li>
+      <li><b>Vermeidet:</b> nur bestrafen · Unbeteiligte raushalten · das Opfer versetzen · Gespräche unter Schüler:innen ohne Begleitung</li>
+      <li><b>Wenn ihr nicht weiterkommt:</b> ${f.hilfe.map((h) => `„${esc(h)}“`).join(" · ")}</li>
+    </ul>
+    <p style="margin:4px 0 0">Mehr dazu unter <a href="#infos">Infos</a>.</p>
+    </details>
+  </div>
+
+  <h3>Arbeitsblatt Fall ${id}: Vom Erkennen zum Handeln</h3>
+  <p class="savebar">Alles wird automatisch gespeichert und erscheint sofort bei allen anderen.</p>
+  <div class="ws" data-fall="${id}">
+    <div class="q">1. Welche Form von Mobbing liegt vor?</div>
+    <div class="box">
+      ${checks("form", [FORMEN, RICHTUNG])}
+      <label class="lbl">Woran erkennt ihr das?</label>
+      <textarea class="r3" data-field="form_why"></textarea>
+    </div>
+
+    <div class="q">2. In welcher Phase befindet sich das Mobbing?</div>
+    <div class="box">
+      ${checks("phase", [PHASEN])}
+      <label class="lbl">Woran erkennt ihr das?</label>
+      <textarea class="r3" data-field="phase_why"></textarea>
+    </div>
+
+    <div class="q">3. Welche Präventions- bzw. Interventionsmaßnahmen sind sinnvoll?</div>
+    <div class="box">
+      <div class="grid2">
+        <div><label class="lbl">Prävention <span style="font-weight:400">(mit der ganzen Klasse vorbeugen)</span></label>
+          <textarea class="r5" data-field="praev"></textarea></div>
+        <div><label class="lbl">Intervention <span style="font-weight:400">(Erstverhalten → Hauptintervention → Nachbereitung)</span></label>
+          <textarea class="r5" data-field="interv"></textarea></div>
+      </div>
+      <label class="lbl">Begründung</label>
+      <div>Weil sich das Mobbing in der <input class="inline" data-field="begr_phase" placeholder="…">phase befindet, braucht es vor allem</div>
+      <div style="margin:8px 0">${checks("begr_cb", [SCHWERPUNKT])}</div>
+      <div>denn …</div>
+      <p class="hint">(Was ist in dieser Phase schon passiert? Reicht Vorbeugen noch – oder muss jemand geschützt werden?)</p>
+      <textarea class="r3" data-field="begr_denn"></textarea>
+      <label class="lbl">Was tut ihr als Lehrkraft als Erstes?</label>
+      <textarea class="r2" data-field="erstes"></textarea>
+    </div>
+
+    <div class="q">Unsere wichtigste Maßnahme <span style="font-weight:400">(1 Satz – die stellt ihr vor)</span></div>
+    <div class="box"><textarea class="r2" data-field="wichtig"></textarea></div>
+
+    <div class="q">Notizen</div>
+    <div class="box"><textarea class="r3" data-field="notizen"></textarea></div>
+  </div>`;
+}
+for (const id of ["A", "B", "C"]) document.getElementById("p-fall" + id).innerHTML = fallPage(id);
+
+// ---------------- Navigation ----------------
+const PAGES = ["start", "infos", "fallA", "fallB", "fallC", "vergleich"];
+function route() {
+  const h = (location.hash || "#start").slice(1);
+  const page = PAGES.includes(h) ? h : "start";
+  document.querySelectorAll("section.page").forEach((s) => s.classList.toggle("active", s.id === "p-" + page));
+  document.querySelectorAll("#nav a").forEach((a) => a.classList.toggle("active", a.getAttribute("href") === "#" + page));
+  window.scrollTo(0, 0);
+}
+window.addEventListener("hashchange", route);
+route();
+
+// ---------------- Status ----------------
+const statusEl = document.getElementById("status");
+function setStatus(cls, text) { statusEl.className = cls; statusEl.textContent = text; }
+function banner(html) { const b = document.getElementById("banner"); b.innerHTML = html; b.style.display = html ? "block" : "none"; }
+
+// ---------------- Zustand ----------------
+const state = { A: {}, B: {}, C: {} };
+let api = null; // { save(fall, patch), reset() }
+
+function wsEl(id) { return document.querySelector(`.ws[data-fall="${id}"]`); }
+
+function applyToForm(id, data, flash) {
+  const ws = wsEl(id);
+  ws.querySelectorAll("[data-field]").forEach((el) => {
+    const field = el.dataset.field;
+    if (el.classList.contains("checks")) {
+      const vals = Array.isArray(data[field]) ? data[field] : [];
+      el.querySelectorAll("input").forEach((inp) => {
+        inp.checked = vals.includes(inp.value);
+        inp.parentElement.classList.toggle("on", inp.checked);
+      });
+    } else if (document.activeElement !== el) {
+      const v = data[field] ?? "";
+      if (el.value !== v) { el.value = v; if (flash) { el.classList.remove("flash"); void el.offsetWidth; el.classList.add("flash"); } }
+    }
+  });
+}
+
+// Eingaben speichern (Textfelder verzögert, Kästchen sofort)
+const timers = {};
+function queueSave(id, field, value, delay) {
+  state[id][field] = value;
+  renderCompare();
+  clearTimeout(timers[id + field]);
+  timers[id + field] = setTimeout(() => { if (api) api.save(id, { [field]: value }); }, delay);
+}
+for (const id of ["A", "B", "C"]) {
+  const ws = wsEl(id);
+  ws.addEventListener("input", (e) => {
+    const el = e.target;
+    if (el.matches("textarea, input.inline")) queueSave(id, el.dataset.field, el.value, 700);
+  });
+  ws.addEventListener("focusout", (e) => {
+    const el = e.target;
+    if (el.matches("textarea, input.inline")) { clearTimeout(timers[id + el.dataset.field]); queueSave(id, el.dataset.field, el.value, 0); }
+  });
+  ws.addEventListener("change", (e) => {
+    const inp = e.target;
+    if (inp.type !== "checkbox") return;
+    const box = inp.closest(".checks");
+    inp.parentElement.classList.toggle("on", inp.checked);
+    const vals = [...box.querySelectorAll("input:checked")].map((i) => i.value);
+    queueSave(id, box.dataset.field, vals, 0);
+  });
+}
+
+// ---------------- Vergleich ----------------
+const LABELS = [
+  ["form", "Form"], ["form_why", "Woran erkannt (Form)"], ["phase", "Phase"], ["phase_why", "Woran erkannt (Phase)"],
+  ["praev", "Prävention"], ["interv", "Intervention"], ["begr", "Begründung"], ["erstes", "Als Erstes"], ["wichtig", "Wichtigste Maßnahme"],
+];
+function val(d, k) {
+  if (k === "begr") {
+    const p = (d.begr_phase || "").trim(), cb = (d.begr_cb || []).join(" + "), dn = (d.begr_denn || "").trim();
+    if (!p && !cb && !dn) return "";
+    return `Weil sich das Mobbing in der ${p || "…"}phase befindet, braucht es vor allem ${cb || "…"}, denn ${dn || "…"}`;
+  }
+  const v = d[k];
+  return Array.isArray(v) ? v.join(", ") : (v || "").trim();
+}
+function phasePill(d) {
+  const p = (d.phase || [])[0] || "";
+  const cls = p.startsWith("Explor") ? "g" : p.startsWith("Konsol") ? "a" : p.startsWith("Manif") ? "r" : "";
+  const name = { g: "Exploration", a: "Konsolidierung", r: "Manifestation" }[cls] || p;
+  return p ? `<span class="pill phase ${cls}" style="border-width:1px">${esc(name)}</span>` : "";
+}
+function renderCompare() {
+  document.getElementById("cmp").innerHTML = ["A", "B", "C"].map((id) => {
+    const d = state[id];
+    return `<div class="card cmp-col"><h3>Fall ${id} · ${FAELLE[id].klasse}${phasePill(d)}</h3>` +
+      LABELS.map(([k, l]) => { const v = val(d, k);
+        return `<div class="cmp-item"><div class="k">${l}</div><div class="v ${v ? "" : "empty"}">${v ? esc(v) : "noch leer"}</div></div>`; }).join("") +
+      "</div>";
+  }).join("");
+}
+renderCompare();
+
+// ---------------- Export / Drucken / Zurücksetzen ----------------
+document.getElementById("btn-export").addEventListener("click", () => {
+  const stamp = new Date().toLocaleString("de-DE");
+  let html = `<html><head><meta charset="utf-8"><title>Ergebnisse Transfer</title></head><body style="font-family:Calibri,Arial">` +
+    `<h1>Workshop Mobbing – Ergebnisse der Gruppenarbeit (Transfer)</h1><p>Stand: ${esc(stamp)}</p>`;
+  for (const id of ["A", "B", "C"]) {
+    const d = state[id];
+    html += `<h2>Fall ${id} · ${FAELLE[id].klasse}: ${esc(FAELLE[id].titel)}</h2><table border="1" cellpadding="6" style="border-collapse:collapse;width:100%">`;
+    for (const [k, l] of LABELS.concat([["notizen", "Notizen"]])) html += `<tr><td style="width:28%"><b>${l}</b></td><td>${esc(val(d, k)).replace(/\n/g, "<br>")}</td></tr>`;
+    html += "</table>";
+  }
+  html += "</body></html>";
+  const blob = new Blob(["﻿" + html], { type: "application/msword" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob); a.download = "Ergebnisse_Transfer_Fall_A-C.doc";
+  document.body.appendChild(a); a.click(); a.remove();
+});
+document.getElementById("btn-print").addEventListener("click", () => {
+  const p = document.getElementById("p-vergleich"); p.classList.add("print-me"); window.print(); p.classList.remove("print-me");
+});
+document.getElementById("btn-reset").addEventListener("click", async () => {
+  const w = prompt("Wirklich ALLE Eintragungen in Fall A, B und C löschen? Zum Bestätigen LÖSCHEN eintippen:");
+  if (w !== "LÖSCHEN") return;
+  if (api) await api.reset();
+});
+
+// ---------------- Firebase ----------------
+(async () => {
+  try {
+    const { initializeApp } = await import(SDK + "firebase-app.js");
+    const fs = await import(SDK + "firebase-firestore.js");
+    const app = initializeApp(firebaseConfig);
+    const db = fs.getFirestore(app);
+    let errorShown = false;
+    const fail = (e) => {
+      console.error(e);
+      setStatus("err", "nicht gespeichert");
+      if (!errorShown) { errorShown = true; banner("<b>Speichern gerade nicht möglich.</b> Bitte kurz Bescheid sagen und solange die Word- oder PDF-Datei aus dem Workshopordner nutzen."); }
+    };
+    const blank = () => Object.fromEntries(TEXT_FIELDS.map((f) => [f, ""]).concat(Object.keys(CHECK_FIELDS).map((f) => [f, []])));
+    api = {
+      save: (id, patch) => {
+        setStatus("busy", "speichert …");
+        return fs.setDoc(fs.doc(db, "workshop", "fall" + id), patch, { merge: true })
+          .then(() => { setStatus("ok", "gespeichert ✓"); if (errorShown) { errorShown = false; banner(""); } })
+          .catch(fail);
+      },
+      reset: () => Promise.all(["A", "B", "C"].map((id) => fs.setDoc(fs.doc(db, "workshop", "fall" + id), blank()))).catch(fail),
+    };
+    let first = { A: true, B: true, C: true };
+    for (const id of ["A", "B", "C"]) {
+      fs.onSnapshot(fs.doc(db, "workshop", "fall" + id), (snap) => {
+        const data = snap.exists() ? snap.data() : {};
+        // eigene, noch nicht gesendete Eingaben im fokussierten Feld behalten
+        state[id] = { ...data };
+        const act = document.activeElement;
+        if (act && act.closest && act.closest(`.ws[data-fall="${id}"]`) && act.dataset.field) state[id][act.dataset.field] = act.value;
+        applyToForm(id, data, !first[id] && !snap.metadata.hasPendingWrites);
+        first[id] = false;
+        renderCompare();
+        if (!snap.metadata.fromCache) setStatus("ok", "verbunden ✓");
+      }, fail);
+    }
+  } catch (e) {
+    console.error(e);
+    setStatus("err", "offline");
+    banner("<b>Keine Verbindung zur Datenbank.</b> Eintragungen werden nicht gespeichert und sind für andere nicht sichtbar. Bitte nutzt die Word- oder PDF-Datei aus dem Workshopordner.");
+  }
+})();
+</script>
+</body>
+</html>
