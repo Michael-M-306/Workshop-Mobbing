@@ -77,6 +77,26 @@
   .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
   #banner { display: none; margin: 0 0 16px; padding: 12px 16px; border-radius: 10px; background: var(--redbg); border: 1px solid var(--red); color: #5a1d18; }
   a { color: var(--blue2); }
+  /* Countdown */
+  #timerbar { display: none; max-width: 1100px; margin: 0 auto; padding: 8px 2px 10px; align-items: center; gap: 12px; flex-wrap: wrap; }
+  #timerbar.on { display: flex; }
+  #tb-time { font-size: 24px; font-weight: 700; font-variant-numeric: tabular-nums; background: #fff; color: var(--blue); border-radius: 8px; padding: 1px 12px; }
+  #timerbar.paused #tb-time { opacity: .6; }
+  #timerbar.over #tb-time { background: #f6e3e1; color: var(--red); }
+  #tb-step { font-size: 16px; color: #fff; }
+  #tb-step b { color: #ffe08a; }
+  .fertig-box { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+  .fertig-btn { font-size: 18px; padding: 11px 20px; }
+  .fertig-btn.done { background: var(--green); border-color: var(--green); }
+  /* Moderation */
+  .mod-time { font-size: 72px; font-weight: 700; color: var(--blue); font-variant-numeric: tabular-nums; line-height: 1; }
+  .mod-time.over { color: var(--red); }
+  .mod-step { font-size: 20px; color: var(--muted); margin: 6px 0 14px; }
+  .prog { list-style: none; padding: 0; margin: 8px 0 0; }
+  .prog li { display: flex; justify-content: space-between; border-bottom: 1px solid #eef1f6; padding: 5px 0; }
+  .prog .ok { color: var(--green); font-weight: 700; } .prog .no { color: #a0a6b0; }
+  .badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-weight: 700; font-size: 14px; }
+  .badge.done { background: var(--greenbg); color: var(--green); } .badge.work { background: var(--amberbg); color: var(--amber); }
   /* Beamer-Ansicht */
   #beamer { display: none; position: fixed; inset: 0; z-index: 50; background: #fff; overflow: auto; padding: 18px 28px 28px; }
   body.beamer-on #beamer { display: block; }
@@ -121,6 +141,7 @@
     <a href="#fallC">Fall C</a>
     <a href="#vergleich">Vergleich</a>
   </nav>
+  <div id="timerbar" aria-live="polite"><span id="tb-time">12:00</span><span id="tb-step"></span></div>
 </header>
 
 <main>
@@ -214,6 +235,24 @@
   <section class="page" id="p-fallA"></section>
   <section class="page" id="p-fallB"></section>
   <section class="page" id="p-fallC"></section>
+
+  <!-- MODERATION (nur für uns, Aufruf über #moderation) -->
+  <section class="page" id="p-moderation">
+    <h2>Moderation</h2>
+    <p class="sub">Nur für uns – diesen Link nicht an die Teilnehmenden geben.</p>
+    <div class="card">
+      <div class="mod-time" id="mod-time">12:00</div>
+      <div class="mod-step" id="mod-step">Countdown noch nicht gestartet</div>
+      <div class="row">
+        <button id="mod-start">Start (12 Min.)</button>
+        <button class="ghost" id="mod-pause">Pause</button>
+        <button class="ghost" id="mod-plus">+1 Minute</button>
+        <button class="danger" id="mod-reset">Countdown zurücksetzen</button>
+      </div>
+    </div>
+    <div class="grid3" id="mod-groups"></div>
+    <div class="row noprint"><a href="#vergleich">→ zum Vergleich und zur Beamer-Ansicht</a></div>
+  </section>
 
   <!-- VERGLEICH -->
   <section class="page" id="p-vergleich">
@@ -357,12 +396,16 @@ function fallPage(id) {
 
     <div class="q">Notizen</div>
     <div class="box"><textarea class="r3" data-field="notizen"></textarea></div>
+  </div>
+  <div class="card tint fertig-box">
+    <button class="fertig-btn" data-fertig="${id}">Wir sind fertig</button>
+    <span class="fertig-hint">Drückt hier, wenn eure wichtigste Maßnahme steht. Ihr könnt danach trotzdem weiterschreiben.</span>
   </div>`;
 }
 for (const id of ["A", "B", "C"]) document.getElementById("p-fall" + id).innerHTML = fallPage(id);
 
 // ---------------- Navigation ----------------
-const PAGES = ["start", "infos", "fallA", "fallB", "fallC", "vergleich"];
+const PAGES = ["start", "infos", "fallA", "fallB", "fallC", "vergleich", "moderation"];
 function route() {
   const h = (location.hash || "#start").slice(1);
   const page = PAGES.includes(h) ? h : "start";
@@ -380,7 +423,94 @@ function banner(html) { const b = document.getElementById("banner"); b.innerHTML
 
 // ---------------- Zustand ----------------
 const state = { A: {}, B: {}, C: {} };
-let api = null; // { save(fall, patch), reset() }
+let api = null; // { save(fall, patch), reset(), control(patch) }
+
+// ---------------- Countdown ----------------
+const DURATION = 12 * 60 * 1000;
+const STEPS = [[2, "Fall lesen"], [6, "Leitfrage 1 + 2"], [11, "Leitfrage 3"], [Infinity, "Wichtigste Maßnahme festhalten und speichern"]];
+let ctl = { status: "idle" };
+function remainingMs() {
+  if (ctl.status === "running") return ctl.endAt - Date.now();
+  if (ctl.status === "paused") return ctl.remaining;
+  return DURATION;
+}
+function fmt(ms) { const neg = ms < 0; ms = Math.abs(ms); const m = Math.floor(ms / 60000), sec = Math.floor((ms % 60000) / 1000); return (neg ? "+" : "") + m + ":" + String(sec).padStart(2, "0"); }
+function stepText(rem) {
+  if (ctl.status === "idle") return "Countdown noch nicht gestartet";
+  if (rem <= 0) return "Zeit ist um – gleich geht es mit den Präsentationen weiter";
+  const elapsed = ((ctl.duration || DURATION) - rem) / 60000;
+  const step = STEPS.find(([until]) => elapsed < until);
+  return (ctl.status === "paused" ? "Pausiert · " : "Jetzt: ") + step[1];
+}
+function tick() {
+  const rem = remainingMs();
+  const on = ctl.status !== "idle";
+  const bar = document.getElementById("timerbar");
+  bar.classList.toggle("on", on);
+  bar.classList.toggle("paused", ctl.status === "paused");
+  bar.classList.toggle("over", on && rem <= 0);
+  document.getElementById("tb-time").textContent = rem <= 0 ? "0:00" : fmt(rem);
+  const st = stepText(rem);
+  document.getElementById("tb-step").innerHTML = rem <= 0 ? `<b>${st}</b>` : st.replace(/^(Jetzt: |Pausiert · )(.*)$/, "$1<b>$2</b>");
+  const mt = document.getElementById("mod-time");
+  mt.textContent = on ? (rem <= 0 ? "0:00" : fmt(rem)) : fmt(DURATION);
+  mt.classList.toggle("over", on && rem <= 0);
+  document.getElementById("mod-step").textContent = st;
+  document.getElementById("mod-pause").textContent = ctl.status === "paused" ? "Weiter" : "Pause";
+}
+setInterval(tick, 500);
+document.getElementById("mod-start").addEventListener("click", () => {
+  if (ctl.status === "running" && !confirm("Der Countdown läuft schon. Neu starten?")) return;
+  api && api.control({ status: "running", endAt: Date.now() + DURATION, duration: DURATION, remaining: DURATION });
+});
+document.getElementById("mod-pause").addEventListener("click", () => {
+  if (!api) return;
+  if (ctl.status === "running") api.control({ status: "paused", remaining: Math.max(0, ctl.endAt - Date.now()) });
+  else if (ctl.status === "paused") api.control({ status: "running", endAt: Date.now() + ctl.remaining });
+});
+document.getElementById("mod-plus").addEventListener("click", () => {
+  if (!api || ctl.status === "idle") return;
+  const dur = (ctl.duration || DURATION) + 60000;
+  if (ctl.status === "running") api.control({ endAt: Math.max(ctl.endAt, Date.now()) + 60000, duration: dur });
+  else api.control({ remaining: ctl.remaining + 60000, duration: dur });
+});
+document.getElementById("mod-reset").addEventListener("click", () => {
+  if (!confirm("Countdown zurücksetzen und bei allen ausblenden?")) return;
+  api && api.control({ status: "idle", endAt: 0, remaining: DURATION, duration: DURATION });
+});
+
+// ---------------- Fertig-Status + Fortschritt ----------------
+document.querySelectorAll("[data-fertig]").forEach((btn) => btn.addEventListener("click", () => {
+  const id = btn.dataset.fertig;
+  const now = !state[id].fertig;
+  state[id].fertig = now; renderFertig(); renderModeration();
+  if (api) api.save(id, { fertig: now });
+}));
+function renderFertig() {
+  document.querySelectorAll("[data-fertig]").forEach((btn) => {
+    const done = !!state[btn.dataset.fertig].fertig;
+    btn.classList.toggle("done", done);
+    btn.textContent = done ? "✓ Fertig gemeldet (nochmal drücken zum Zurücknehmen)" : "Wir sind fertig";
+  });
+}
+function progress(d) {
+  const has = (k) => Array.isArray(d[k]) ? d[k].length > 0 : !!(d[k] || "").trim();
+  return [
+    ["Leitfrage 1 (Form)", has("form") || has("form_why")],
+    ["Leitfrage 2 (Phase)", has("phase") || has("phase_why")],
+    ["Leitfrage 3 (Maßnahmen)", has("praev") || has("interv") || has("begr_denn") || has("erstes")],
+    ["Wichtigste Maßnahme", has("wichtig")],
+  ];
+}
+function renderModeration() {
+  const el = document.getElementById("mod-groups"); if (!el) return;
+  el.innerHTML = ["A", "B", "C"].map((id) => {
+    const d = state[id];
+    return `<div class="card"><h3 style="margin-top:0">Fall ${id} · ${FAELLE[id].klasse}</h3>
+      <span class="badge ${d.fertig ? "done" : "work"}">${d.fertig ? "✓ fertig" : "arbeitet noch"}</span>
+      <ul class="prog">${progress(d).map(([l, ok]) => `<li><span>${l}</span><span class="${ok ? "ok" : "no"}">${ok ? "✓" : "–"}</span></li>`).join("")}</ul></div>`;
+  }).join("");
+}
 
 function wsEl(id) { return document.querySelector(`.ws[data-fall="${id}"]`); }
 
@@ -499,7 +629,8 @@ document.addEventListener("keydown", (e) => {
   if (e.key === "Escape" && !document.fullscreenElement) closeBeamer();
 });
 const _renderCompare = renderCompare;
-renderCompare = function () { _renderCompare(); renderBeamer(); };
+renderCompare = function () { _renderCompare(); renderBeamer(); renderModeration(); renderFertig(); };
+renderModeration(); renderFertig();
 
 // ---------------- Export / Drucken / Zurücksetzen ----------------
 document.getElementById("btn-export").addEventListener("click", () => {
@@ -533,23 +664,33 @@ document.getElementById("btn-reset").addEventListener("click", async () => {
     const { initializeApp } = await import(SDK + "firebase-app.js");
     const fs = await import(SDK + "firebase-firestore.js");
     const app = initializeApp(firebaseConfig);
-    const db = fs.getFirestore(app);
+    let db;
+    try {
+      db = fs.initializeFirestore(app, { localCache: fs.persistentLocalCache({ tabManager: fs.persistentMultipleTabManager() }) });
+    } catch (e) { console.warn("Offline-Puffer nicht verfügbar", e); db = fs.getFirestore(app); }
+    let pending = 0, waitTimer = null;
+    const offlineNote = () => setStatus("busy", "offline – wird nachgeschickt");
+    window.addEventListener("offline", offlineNote);
+    window.addEventListener("online", () => setStatus("busy", "verbinde …"));
     let errorShown = false;
     const fail = (e) => {
       console.error(e);
       setStatus("err", "nicht gespeichert");
       if (!errorShown) { errorShown = true; banner("<b>Speichern gerade nicht möglich.</b> Bitte kurz Bescheid sagen und solange die Word- oder PDF-Datei aus dem Workshopordner nutzen."); }
     };
-    const blank = () => Object.fromEntries(TEXT_FIELDS.map((f) => [f, ""]).concat(Object.keys(CHECK_FIELDS).map((f) => [f, []])));
+    const blank = () => Object.assign(Object.fromEntries(TEXT_FIELDS.map((f) => [f, ""]).concat(Object.keys(CHECK_FIELDS).map((f) => [f, []]))), { fertig: false });
     api = {
       save: (id, patch) => {
-        setStatus("busy", "speichert …");
+        pending++; setStatus("busy", navigator.onLine ? "speichert …" : "offline – wird nachgeschickt");
+        clearTimeout(waitTimer); waitTimer = setTimeout(() => { if (pending > 0) offlineNote(); }, 4000);
         return fs.setDoc(fs.doc(db, "workshop", "fall" + id), patch, { merge: true })
-          .then(() => { setStatus("ok", "gespeichert ✓"); if (errorShown) { errorShown = false; banner(""); } })
-          .catch(fail);
+          .then(() => { pending--; if (pending <= 0) { pending = 0; setStatus("ok", "gespeichert ✓"); } if (errorShown) { errorShown = false; banner(""); } })
+          .catch((e) => { pending = Math.max(0, pending - 1); fail(e); });
       },
+      control: (patch) => fs.setDoc(fs.doc(db, "workshop", "steuerung"), patch, { merge: true }).catch(fail),
       reset: () => Promise.all(["A", "B", "C"].map((id) => fs.setDoc(fs.doc(db, "workshop", "fall" + id), blank()))).catch(fail),
     };
+    fs.onSnapshot(fs.doc(db, "workshop", "steuerung"), (snap) => { ctl = snap.exists() ? snap.data() : { status: "idle" }; tick(); }, fail);
     let first = { A: true, B: true, C: true };
     for (const id of ["A", "B", "C"]) {
       fs.onSnapshot(fs.doc(db, "workshop", "fall" + id), (snap) => {
