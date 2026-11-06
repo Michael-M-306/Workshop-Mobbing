@@ -77,6 +77,27 @@
   .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
   #banner { display: none; margin: 0 0 16px; padding: 12px 16px; border-radius: 10px; background: var(--redbg); border: 1px solid var(--red); color: #5a1d18; }
   a { color: var(--blue2); }
+  /* Beamer-Ansicht */
+  #beamer { display: none; position: fixed; inset: 0; z-index: 50; background: #fff; overflow: auto; padding: 18px 28px 28px; }
+  body.beamer-on #beamer { display: block; }
+  body.beamer-on { overflow: hidden; }
+  .bm-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 14px; }
+  .bm-bar h2 { margin: 0; font-size: 34px; }
+  .bm-tabs { display: flex; flex-wrap: wrap; gap: 6px; }
+  .bm-tabs button { font-size: 18px; padding: 8px 16px; }
+  .bm-tabs button.sel { background: var(--blue); border-color: var(--blue); }
+  .bm-tabs button:not(.sel) { background: #fff; color: var(--blue2); }
+  #bm-grid { display: grid; gap: 18px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  #bm-grid.single { grid-template-columns: minmax(0, 1fr); max-width: 1200px; margin: 0 auto; }
+  .bm-col { border: 2px solid var(--line); border-radius: 14px; padding: 16px 20px; }
+  .bm-col h3 { font-size: 28px; margin: 0 0 10px; }
+  .bm-col .pill { font-size: 20px; padding: 3px 14px; }
+  .bm-col .k { font-size: 16px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); font-weight: 700; margin-top: 12px; }
+  .bm-col .v { font-size: 23px; line-height: 1.35; white-space: pre-wrap; }
+  #bm-grid.single .bm-col .v { font-size: 30px; }
+  #bm-grid.single .bm-col h3 { font-size: 36px; }
+  .bm-col .v.empty { color: #a0a6b0; font-style: italic; }
+  #beamer .key { font-size: 26px; margin-top: 18px; }
   @media print {
     header, nav, .noprint, #banner { display: none !important; }
     body { background: #fff; font-size: 12pt; }
@@ -203,13 +224,29 @@
     <div class="card noprint">
       <b>Für uns (Gruppe 4)</b>
       <div class="row" style="margin-top:8px">
-        <button id="btn-export">Ergebnisse als Word-Datei herunterladen</button>
+        <button id="btn-beamer">Beamer-Ansicht öffnen</button>
+        <button class="ghost" id="btn-export">Ergebnisse als Word-Datei herunterladen</button>
         <button class="ghost" id="btn-print">Drucken / als PDF speichern</button>
         <button class="danger" id="btn-reset">Alle Eintragungen löschen</button>
       </div>
     </div>
   </section>
 </main>
+
+<div id="beamer" aria-label="Beamer-Ansicht">
+  <div class="bm-bar">
+    <h2>Vergleich: Die Phase entscheidet</h2>
+    <div class="bm-tabs">
+      <button data-show="all" class="sel">Alle</button>
+      <button data-show="A">Fall A</button>
+      <button data-show="B">Fall B</button>
+      <button data-show="C">Fall C</button>
+      <button data-show="close" class="ghost">✕ Schließen</button>
+    </div>
+  </div>
+  <div id="bm-grid"></div>
+  <div class="key" id="bm-key">Je früher wir hinschauen, desto eher reicht Prävention.</div>
+</div>
 
 <script type="module">
 // ---------------- Konfiguration ----------------
@@ -422,6 +459,47 @@ function renderCompare() {
   }).join("");
 }
 renderCompare();
+
+// ---------------- Beamer-Ansicht ----------------
+const BM_FIELDS = [["form", "Form"], ["phase_why", "Woran erkennt man die Phase?"], ["begr", "Begründung"], ["wichtig", "Wichtigste Maßnahme"]];
+let bmShow = "all";
+function renderBeamer() {
+  if (!document.body.classList.contains("beamer-on")) return;
+  const ids = bmShow === "all" ? ["A", "B", "C"] : [bmShow];
+  const grid = document.getElementById("bm-grid");
+  grid.classList.toggle("single", ids.length === 1);
+  grid.innerHTML = ids.map((id) => {
+    const d = state[id];
+    return `<div class="bm-col"><h3>Fall ${id} · ${FAELLE[id].klasse} ${phasePill(d)}</h3>` +
+      BM_FIELDS.map(([k, l]) => { const v = val(d, k);
+        return `<div class="k">${l}</div><div class="v ${v ? "" : "empty"}">${v ? esc(v) : "noch leer"}</div>`; }).join("") + "</div>";
+  }).join("");
+  document.getElementById("bm-key").style.display = bmShow === "all" ? "block" : "none";
+  document.querySelectorAll(".bm-tabs button[data-show]").forEach((b) => b.classList.toggle("sel", b.dataset.show === bmShow));
+}
+function openBeamer() {
+  document.body.classList.add("beamer-on"); renderBeamer();
+  const el = document.documentElement;
+  if (el.requestFullscreen) el.requestFullscreen().catch(() => {});
+}
+function closeBeamer() {
+  document.body.classList.remove("beamer-on");
+  if (document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(() => {});
+}
+document.getElementById("btn-beamer").addEventListener("click", openBeamer);
+document.querySelector(".bm-tabs").addEventListener("click", (e) => {
+  const b = e.target.closest("button[data-show]"); if (!b) return;
+  if (b.dataset.show === "close") return closeBeamer();
+  bmShow = b.dataset.show; renderBeamer();
+});
+document.addEventListener("keydown", (e) => {
+  if (!document.body.classList.contains("beamer-on")) return;
+  const map = { "1": "A", "2": "B", "3": "C", "0": "all", "a": "A", "b": "B", "c": "C" };
+  if (map[e.key.toLowerCase()]) { bmShow = map[e.key.toLowerCase()]; renderBeamer(); }
+  if (e.key === "Escape" && !document.fullscreenElement) closeBeamer();
+});
+const _renderCompare = renderCompare;
+renderCompare = function () { _renderCompare(); renderBeamer(); };
 
 // ---------------- Export / Drucken / Zurücksetzen ----------------
 document.getElementById("btn-export").addEventListener("click", () => {
