@@ -312,12 +312,15 @@
     <div class="grid3" id="cmp"></div>
     <div class="key">Je früher wir hinschauen, desto eher gelingt Prävention.</div>
     <div class="card noprint">
-      <b>Für uns (Gruppe 4)</b>
+      <b>Ergebnisse sichern</b>
       <div class="row" style="margin-top:8px">
         <button id="btn-beamer">Beamer-Ansicht öffnen</button>
         <button class="ghost" id="btn-export">Ergebnisse als Word-Datei herunterladen</button>
         <button class="ghost" id="btn-print">Drucken / als PDF speichern</button>
-        <button class="danger" id="btn-reset">Alle Eintragungen löschen</button>
+      </div>
+      <div id="teacher-reset" hidden style="margin-top:12px">
+        <b>Nur für uns (Gruppe 4)</b>
+        <div class="row" style="margin-top:8px"><button class="danger" id="btn-reset">Alle Eintragungen löschen</button></div>
       </div>
       <p id="teacher-note" hidden style="margin:10px 0 0">Lehrkraft-Modus aktiv: In der Beamer-Ansicht gibt es bei Fall A, B und C den Knopf <b>„Lösungsvorschlag“</b> (Taste L). Mit <b>→</b> oder der Leertaste wird Schritt für Schritt aufgedeckt, mit <b>←</b> geht es zurück.</p>
     </div>
@@ -474,6 +477,7 @@ function route() {
   if (h === "lehrkraft" || h === "moderation") setTeacher();
   if (h === "lehrkraft") h = "vergleich";
   const tn = document.getElementById("teacher-note"); if (tn) tn.hidden = !teacher;
+  const tr = document.getElementById("teacher-reset"); if (tr) tr.hidden = !teacher;
   const sc = document.getElementById("bm-sol-ctrl"); if (sc) sc.hidden = !teacher;
   const page = PAGES.includes(h) ? h : "start";
   document.querySelectorAll("section.page").forEach((s) => s.classList.toggle("active", s.id === "p-" + page));
@@ -779,6 +783,7 @@ document.getElementById("btn-print").addEventListener("click", () => {
   const p = document.getElementById("p-vergleich"); p.classList.add("print-me"); window.print(); p.classList.remove("print-me");
 });
 document.getElementById("btn-reset").addEventListener("click", async () => {
+  if (!teacher) return;
   const w = prompt("Wirklich ALLE Eintragungen in Fall A, B und C löschen? Zum Bestätigen LÖSCHEN eintippen:");
   if (w !== "LÖSCHEN") return;
   if (api) await api.reset();
