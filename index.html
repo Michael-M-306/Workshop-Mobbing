@@ -118,6 +118,23 @@
   #bm-grid.single .bm-col h3 { font-size: 36px; }
   .bm-col .v.empty { color: #a0a6b0; font-style: italic; }
   #beamer .key { font-size: 26px; margin-top: 18px; }
+  .bm-sol-ctrl { display: flex; flex-wrap: wrap; gap: 6px; }
+  .bm-sol-ctrl[hidden] { display: none; }
+  .bm-sol-ctrl button { font-size: 18px; padding: 8px 14px; }
+  .bm-sol-ctrl button.on { background: var(--green); border-color: var(--green); }
+  .bm-sol-ctrl button:disabled { opacity: .45; cursor: default; }
+  .sol-hint { text-align: center; color: var(--muted); font-size: 18px; margin: 0 0 12px; }
+  .sol-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0 18px; max-width: 1500px; margin: 0 auto; }
+  .sol-h { font-size: 26px; font-weight: 700; color: var(--blue); padding: 6px 4px 10px; }
+  .sol-h.s { color: var(--green); }
+  .sol-t { grid-column: 1 / -1; font-size: 18px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); border-top: 2px solid var(--line); padding: 10px 4px 4px; }
+  .sol-c { padding: 4px 12px 12px; border-radius: 10px; }
+  .sol-c.cur { background: #FFF7E0; }
+  .sol-c .k { font-size: 14px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); font-weight: 700; margin-top: 8px; }
+  .sol-c .v { font-size: 21px; line-height: 1.35; white-space: pre-wrap; }
+  .sol-c .v.empty { color: #a0a6b0; font-style: italic; }
+  .sol-c.s .v { color: #1E6B3A; }
+  .sol-c .wait { font-size: 20px; color: #a0a6b0; font-style: italic; margin-top: 10px; }
   @media print {
     header, nav, .noprint, #banner { display: none !important; }
     body { background: #fff; font-size: 12pt; }
@@ -165,18 +182,19 @@
       <a class="big-btn" href="#fallB">Fall B · Klasse 7b<small>Die „echte“ Klassengruppe</small></a>
       <a class="big-btn" href="#fallC">Fall C · Klasse 8a<small>„War doch nur Spaß“</small></a>
     </div>
-    <p style="margin-top:16px">Unter <a href="#infos">Infos</a> findet ihr die wichtigsten Grundlagen aus unserem Handout. Unter <a href="#vergleich">Vergleich</a> seht ihr am Ende alle drei Ergebnisse nebeneinander.</p>
+    <p style="margin-top:16px">Unter <a href="#infos">Infos</a> findet ihr die wichtigsten Grundlagen aus dem Workshop. Unter <a href="#vergleich">Vergleich</a> seht ihr am Ende alle drei Ergebnisse nebeneinander.</p>
     <p class="src">Bitte keine Namen oder persönlichen Daten eintragen – gespeichert werden nur eure Antworten zu den Fällen.</p>
   </section>
 
   <!-- INFOS -->
   <section class="page" id="p-infos">
     <h2>Infos: Mobbing erkennen und handeln</h2>
-    <p class="sub">Die Grundlagen aus unserem Handout</p>
+    <p class="sub">Die Grundlagen aus dem Workshop – geordnet nach euren drei Leitfragen</p>
 
+    <h3>1 · Erkennen: Ist es Mobbing – und welche Form?</h3>
     <div class="grid2">
       <div class="card">
-        <h3 style="margin-top:0">Drei Bestimmungsmerkmale</h3>
+        <b style="color:var(--blue)">Drei Bestimmungsmerkmale</b>
         <ul>
           <li><b>Wiederholungsaspekt:</b> wiederholt und über einen längeren Zeitraum</li>
           <li><b>Verletzungsabsicht:</b> die Täter:innen wollen das Opfer schädigen</li>
@@ -184,51 +202,84 @@
         </ul>
       </div>
       <div class="card">
-        <h3 style="margin-top:0">Abgrenzung: Mobbing vs. …</h3>
-        <p style="margin:0">Aggression · Gewalt · Kampf- und Tobspiele · Necken · Belästigungen</p>
+        <b style="color:var(--blue)">Mobbing ist ein Gruppenphänomen</b>
+        <p style="margin:8px 0 0">Neben Täter:in und Opfer gibt es weitere Rollen: <b>Assistent:innen</b> machen aktiv mit, <b>Verstärker:innen</b> lachen und feuern an, <b>Außenstehende</b> schauen weg, <b>Verteidiger:innen</b> helfen dem Opfer. Mitlachende und Wegschauende verstärken Mobbing, Verteidiger:innen können es stoppen. Deshalb nie nur auf Täter und Opfer schauen.</p>
       </div>
     </div>
 
-    <h3>Mobbingprozess: drei zentrale Phasen (nach Schäfer, 2003)</h3>
-    <div class="grid3">
-      <div class="phase g"><b class="t">1. Explorationsphase</b><br>Angriffe auf unterschiedliche Personen, Austesten des „geeigneten“ Opfers<br><b class="t">→ präventive Maßnahmen effektiv</b></div>
-      <div class="phase a"><b class="t">2. Konsolidierungsphase</b><br>Vermehrtes Attackieren des ausgewählten Opfers, soziale Herabsetzung<br><b class="t">→ zu Beginn kann Prävention noch stoppen, bei fortgeschrittener Phase Intervention</b></div>
-      <div class="phase r"><b class="t">3. Manifestationsphase</b><br>Mobbing-Struktur und -Beteiligung gefestigt, die soziale Norm der Mitschüler:innen ist manipuliert<br><b class="t">→ Intervention notwendig</b></div>
-    </div>
-
-    <h3>Erscheinungs- und Interaktionsformen</h3>
     <div class="card">
+      <b style="color:var(--blue)">Erscheinungs- und Interaktionsformen</b>
       <ul>
         <li><b>Physisches Mobbing:</b> alle Handlungen mit dem Ziel, eine Person körperlich zu verletzen</li>
         <li><b>Verbales Mobbing:</b> sämtliche verbalen Attacken (verletzende Spitznamen, verbale Drohungen …)</li>
         <li><b>Relationales Mobbing:</b> Angreifen und Zerstören sozialer Beziehungen, der sozialen Zugehörigkeit und Akzeptanz</li>
         <li><b>Cybermobbing:</b> Mobbing über digitale Medien, z. B. Ausschluss aus Online-Gruppen, Verbreiten und Lächerlichmachen von Nachrichten oder Bildern</li>
       </ul>
-      <p style="margin:8px 0 0"><b>Direkt</b> = unmittelbar gegen das Opfer gerichtet · <b>Indirekt</b> = über Dritte oder hinter dem Rücken des Opfers (z. B. lästern, Gerüchte verbreiten)</p>
+      <p style="margin:8px 0 12px"><b>Direkt</b> = unmittelbar gegen das Opfer gerichtet · <b>Indirekt</b> = über Dritte oder hinter dem Rücken des Opfers (z. B. lästern, Gerüchte verbreiten)</p>
+      <details class="hilfe-d"><summary>Mehr zu Cybermobbing (antippen)</summary>
+        <ul>
+          <li><b>Besonderheiten:</b> jederzeit und überall möglich · kein Rückzugsort, auch nicht zu Hause · großes, unüberschaubares Publikum · oft anonym · für Lehrkräfte schwer zu sehen</li>
+          <li><b>Formen:</b> Online-Belästigung · Online-Verunglimpfung · Online-Ausschluss · Online-Outing</li>
+        </ul>
+      </details>
     </div>
 
-    <h3>Mögliche Warnsignale für Lehrkräfte</h3>
     <div class="card">
+      <b style="color:var(--blue)">Mögliche Warnsignale für Lehrkräfte</b>
       <ul>
         <li>Verletzungen am Körper, zerrissene oder schmutzige Kleidung</li>
         <li>beim Essen oder in den Pausen oft allein</li>
-        <li>plötzlicher Leistungsabfall</li>
         <li>wird bei Lern- und Arbeitsgruppen eher gemieden</li>
+        <li>plötzlicher Leistungsabfall</li>
+        <li>häufige Fehlzeiten, versucht die Schule zu meiden</li>
+        <li>ängstlich, zurückgezogen, meldet sich kaum noch</li>
       </ul>
+      <p style="margin:8px 0 0">Wichtig: Warnsignale müssen <b>wiederholt</b> auftreten – sie können auch andere Ursachen haben.</p>
     </div>
 
-    <h3>Handeln als Lehrkraft: Drei-Phasen-Modell zur Intervention</h3>
+    <div class="card">
+      <details class="hilfe-d"><summary>Abgrenzung: Mobbing vs. … (antippen)</summary>
+        <ul>
+          <li><b>Aggression:</b> kann einmalig und spontan sein</li>
+          <li><b>Gewalt:</b> Absicht + Machtungleichgewicht, muss nicht wiederholt sein</li>
+          <li><b>Kampf- und Tobspiele:</b> spielerisch, Rollen wechseln, niemand wird geschädigt</li>
+          <li><b>Necken:</b> harmlos und gegenseitig</li>
+          <li><b>Belästigung:</b> gegen den Willen der Person; wiederholt und mit Absicht kann sie Mobbing sein</li>
+        </ul>
+      </details>
+    </div>
+
+    <h3>2 · Phase bestimmen: In welcher Phase ist das Mobbing?</h3>
+    <div class="grid3">
+      <div class="phase g"><b class="t">1. Explorationsphase</b><br>Angriffe auf unterschiedliche Personen, Austesten des „geeigneten“ Opfers<br><i>Erkennbar an:</i> wechselnde Ziele, noch kein festes Opfer<br><b class="t">→ präventive Maßnahmen effektiv</b></div>
+      <div class="phase a"><b class="t">2. Konsolidierungsphase</b><br>Vermehrtes Attackieren des ausgewählten Opfers, soziale Herabsetzung<br><i>Erkennbar an:</i> ein Opfer ist ausgewählt, die Angriffe nehmen zu<br><b class="t">→ zu Beginn kann Prävention noch stoppen, bei fortgeschrittener Phase Intervention</b></div>
+      <div class="phase r"><b class="t">3. Manifestationsphase</b><br>Mobbing-Struktur und -Beteiligung gefestigt, die soziale Norm der Mitschüler:innen ist manipuliert<br><i>Erkennbar an:</i> dauert schon lange, fast alle beteiligt, gilt als „normal“<br><b class="t">→ Intervention notwendig</b></div>
+    </div>
+
+    <h3>3 · Handeln: Prävention und Intervention</h3>
+    <div class="card">
+      <b style="color:var(--blue)">Prävention: Was die ganze Klasse stärkt</b>
+      <ul>
+        <li>gemeinsame Klassenregeln für einen respektvollen Umgang, Klassenrat</li>
+        <li>soziales Lernen, Präventionsprogramm für die ganze Klasse</li>
+        <li>Zuschauende stärken: Hinschauen und Hilfe holen ist kein „Petzen“</li>
+        <li>Regeln für Klassenchats, Medienkompetenz (bei Cybermobbing)</li>
+        <li>Haltung zeigen: Sprüche und Ausgrenzung sofort ansprechen</li>
+      </ul>
+      <p style="margin:8px 0 0">Präventionsprogramme – Empfehlungsliste: <a href="https://www.gruene-liste-praevention.de/nano.cms/datenbank/alle" target="_blank" rel="noopener">Grüne Liste Prävention</a></p>
+    </div>
+
+    <p style="margin:4px 0 8px"><b style="color:var(--blue)">Intervention: Drei-Phasen-Modell</b></p>
     <div class="grid3">
       <div class="card"><b style="color:var(--blue)">1 · Erstverhalten</b>
         <ul><li>Situation abbrechen, Opfer schützen</li><li>aufklären und bewerten, ob es Mobbing ist</li><li>Erstschutz sichern, Vertrauen aufbauen</li></ul></div>
       <div class="card"><b style="color:var(--blue)">2 · Hauptintervention</b>
-        <ul><li>Vorgehen planen</li><li>Kooperationspartner hinzuziehen (Kolleg:innen, Schulsozialarbeit, Schulleitung, Eltern)</li><li>Gespräche mit den Beteiligten</li><li>Schülerunterstützer hinzuziehen</li><li>Aufarbeitung eng begleiten</li></ul></div>
+        <ul><li>Vorgehen planen</li><li>Kooperationspartner hinzuziehen (Kolleg:innen, Schulsozialarbeit, Schulleitung)</li><li>Eltern situationsbedingt und in Absprache mit dem Kind und der Schulsozialarbeit einbeziehen</li><li>Gespräche mit den Beteiligten</li><li>Schülerunterstützer hinzuziehen (die Klasse nur mit Einverständnis des Opfers)</li><li>Aufarbeitung eng begleiten</li></ul></div>
       <div class="card"><b style="color:var(--blue)">3 · Nachbereitung / Erfolgskontrolle</b>
         <ul><li>Maßnahmen überprüfen und Nachhaltigkeit sichern (wirkt es nicht: zurück zur Planung)</li><li>präventive Anschlussmaßnahmen</li></ul></div>
     </div>
     <div class="key">Merksätze: Opferschutz geht vor · Nicht allein handeln · Nicht bloßstellen</div>
-    <p>Präventionsprogramme – Empfehlungsliste: <a href="https://www.gruene-liste-praevention.de/nano.cms/datenbank/alle" target="_blank" rel="noopener">Grüne Liste Prävention</a></p>
-    <p class="src">Quelle: Wachs, S., Hess, M., Scheithauer, H. &amp; Schubarth, W. (2016). Mobbing an Schulen: Erkennen – Handeln – Vorbeugen. Kohlhammer.</p>
+    <p class="src">Quelle: Wachs, S., Hess, M., Scheithauer, H. &amp; Schubarth, W. (2016). Mobbing an Schulen: Erkennen – Handeln – Vorbeugen. Kohlhammer. S. 18–19, 23, 24, 29, 31–38, 63–64, 82–84, 104–118. Phasen nach Schäfer (2003), zit. n. Wachs et al. (2016), S. 23.</p>
   </section>
 
   <!-- FÄLLE (werden per Script befüllt) -->
@@ -259,7 +310,7 @@
     <h2>Vergleich: Die Phase entscheidet</h2>
     <p class="sub">Die Ergebnisse aller drei Gruppen – aktualisiert sich live.</p>
     <div class="grid3" id="cmp"></div>
-    <div class="key">Je früher wir hinschauen, desto eher reicht Prävention.</div>
+    <div class="key">Je früher wir hinschauen, desto eher gelingt Prävention.</div>
     <div class="card noprint">
       <b>Für uns (Gruppe 4)</b>
       <div class="row" style="margin-top:8px">
@@ -268,6 +319,7 @@
         <button class="ghost" id="btn-print">Drucken / als PDF speichern</button>
         <button class="danger" id="btn-reset">Alle Eintragungen löschen</button>
       </div>
+      <p id="teacher-note" hidden style="margin:10px 0 0">Lehrkraft-Modus aktiv: In der Beamer-Ansicht gibt es bei Fall A, B und C den Knopf <b>„Lösungsvorschlag“</b> (Taste L). Mit <b>→</b> oder der Leertaste wird Schritt für Schritt aufgedeckt, mit <b>←</b> geht es zurück.</p>
     </div>
   </section>
 </main>
@@ -282,9 +334,14 @@
       <button data-show="C">Fall C</button>
       <button data-show="close" class="ghost">✕ Schließen</button>
     </div>
+    <div class="bm-sol-ctrl" id="bm-sol-ctrl" hidden>
+      <button data-sol="toggle" title="Taste L">Lösungsvorschlag</button>
+      <button data-sol="prev" class="ghost" title="Pfeil links">◀</button>
+      <button data-sol="next" title="Pfeil rechts / Leertaste">Nächster Schritt ▶</button>
+    </div>
   </div>
   <div id="bm-grid"></div>
-  <div class="key" id="bm-key">Je früher wir hinschauen, desto eher reicht Prävention.</div>
+  <div class="key" id="bm-key">Je früher wir hinschauen, desto eher gelingt Prävention.</div>
 </div>
 
 <script type="module">
@@ -345,7 +402,7 @@ function fallPage(id) {
   <div class="card tint hilfe">
     <details class="hilfe-d"><summary>Hilfekasten (antippen zum Öffnen)</summary>
     <ul>
-      <li><b>Faustregel:</b> Je früher die Phase, desto eher reicht Prävention. Je weiter fortgeschritten, desto mehr Intervention.</li>
+      <li><b>Faustregel:</b> Je früher die Phase, desto eher wirkt Prävention. Je weiter fortgeschritten, desto mehr Intervention.</li>
       <li><b>Beispiele für Prävention:</b> Klassenregeln gegen Mobbing · Klassenrat · soziales Lernen · ein Präventionsprogramm mit der ganzen Klasse</li>
       <li><b>Drei-Phasen-Modell (Intervention):</b> 1. Erstverhalten: abbrechen, schützen, aufklären · 2. Hauptintervention: planen, Kooperationspartner, Gespräche, Schülerunterstützer, eng begleiten · 3. Nachbereitung: überprüfen, Nachhaltigkeit sichern, Prävention</li>
       <li><b>Merksätze:</b> Opferschutz geht vor · nicht allein handeln · nicht bloßstellen</li>
@@ -406,8 +463,18 @@ for (const id of ["A", "B", "C"]) document.getElementById("p-fall" + id).innerHT
 
 // ---------------- Navigation ----------------
 const PAGES = ["start", "infos", "fallA", "fallB", "fallC", "vergleich", "moderation"];
+let teacher = false;
+try { teacher = sessionStorage.getItem("lehrkraft") === "1"; } catch (e) {}
+function setTeacher() {
+  teacher = true;
+  try { sessionStorage.setItem("lehrkraft", "1"); } catch (e) {}
+}
 function route() {
-  const h = (location.hash || "#start").slice(1);
+  let h = (location.hash || "#start").slice(1);
+  if (h === "lehrkraft" || h === "moderation") setTeacher();
+  if (h === "lehrkraft") h = "vergleich";
+  const tn = document.getElementById("teacher-note"); if (tn) tn.hidden = !teacher;
+  const sc = document.getElementById("bm-sol-ctrl"); if (sc) sc.hidden = !teacher;
   const page = PAGES.includes(h) ? h : "start";
   document.querySelectorAll("section.page").forEach((s) => s.classList.toggle("active", s.id === "p-" + page));
   document.querySelectorAll("#nav a").forEach((a) => a.classList.toggle("active", a.getAttribute("href") === "#" + page));
@@ -593,10 +660,62 @@ renderCompare();
 // ---------------- Beamer-Ansicht ----------------
 const BM_FIELDS = [["form", "Form"], ["phase_why", "Woran erkennt man die Phase?"], ["begr", "Begründung"], ["wichtig", "Wichtigste Maßnahme"]];
 let bmShow = "all";
+// Lösungsvorschlag (nur im Lehrkraft-Modus sichtbar)
+const LOESUNG = {"A": {"form": ["verbal", "direkt"], "form_why": "Sprüche über Brille, Turnschuhe und Frisur = Verspotten/Beleidigen (verbal); direkt an die Betroffenen gerichtet, in den Pausen und vor dem Unterricht.", "phase": ["Explorationsphase"], "phase_why": ["Die Ziele wechseln (Marie, Max, Finn) – Noah und seine Freunde testen aus.", "Wer sich wehrt, wird in Ruhe gelassen.", "Der Fokus auf Finn besteht erst seit einer Woche.", "Warnsignal: Finn wirkt unsicher und möchte sich umsetzen."], "praev": ["Klassenregeln für einen respektvollen Umgang gemeinsam erarbeiten, Klassenrat", "soziales Lernen / Präventionsprogramm für Klasse 5, z.B. ProAct, fairplayer.manual oder Olweus-Programm"], "interv": ["Sprüche sofort und klar ansprechen (Haltung zeigen)", "Finn ein vertrauliches Gespräch anbieten, Sitzplatzwunsch ernst nehmen – Umsetzen allein löst aber nichts", "kurzes Gespräch mit Noah & Co., weiter beobachten"], "begr_phase": "Explorations", "begr_cb": ["Prävention"], "begr": "Noah und seine Freunde testen noch aus und es gibt noch kein festes Opfer. Mit klaren Regeln und der ganzen Klasse lässt sich das noch stoppen.", "erstes": "Die nächsten Sprüche sofort unterbrechen und klar Stellung beziehen; Finn ein vertrauliches Gespräch anbieten.", "wichtig": "Wir sprechen Sprüche ab sofort jedes Mal klar an und erarbeiten mit der 5c gemeinsame Regeln für einen respektvollen Umgang."}, "B": {"form": ["relational", "Cybermobbing", "direkt", "indirekt"], "form_why": "Ausschluss aus der Klassengruppe und bei Gruppenarbeiten (relational, direkt); Screenshots weiterleiten und lästern (Cybermobbing, indirekt – hinter Hannahs Rücken).", "phase": ["Konsolidierungsphase"], "phase_why": ["Ein Opfer ist ausgewählt (Hannah).", "Lea und Mira haben angefangen, inzwischen machen immer mehr mit.", "Soziale Herabsetzung durch Ausschluss und Screenshots.", "Warnsignale: Hannah steht in den Pausen allein, wird bei Gruppenarbeiten gemieden, meldet sich kaum noch.", "Diskussionspunkt: erst seit den Herbstferien – gerade deshalb früh handeln."], "praev": ["Regeln für Klassenchats vereinbaren", "Cybermobbing und Medienkompetenz thematisieren, z.B. Medienhelden", "Zuschauende stärken"], "interv": ["Erstverhalten: vertrauliches Gespräch mit Hannah, Schutz, feste Ansprechperson; die Hinweisgeberin bleibt anonym", "Hauptintervention: mit Kolleg:innen / Schulsozialarbeit planen; Gespräche mit Lea und Mira, ohne bloßzustellen; Eltern in Absprache mit Hannah und der Schulsozialarbeit", "Schülerunterstützer für Hannah; die Klasse nur mit ihrem Einverständnis einbeziehen"], "begr_phase": "Konsolidierungs", "begr_cb": ["Prävention", "Intervention"], "begr": "Hannah ist als Opfer ausgewählt und immer mehr machen mit. Sie braucht jetzt Schutz, Prävention in der Klasse allein reicht nicht mehr.", "erstes": "Ein vertrauliches Gespräch mit Hannah führen – ohne die Schülerin zu nennen, die es erzählt hat.", "wichtig": "Wir sprechen vertraulich mit Hannah, sichern ihr Schutz zu und planen das weitere Vorgehen mit der Schulsozialarbeit – die Hinweisgeberin bleibt anonym."}, "C": {"form": ["physisch", "verbal", "direkt"], "form_why": "Schubsen, Rucksack auskippen, zerrissene Jacke (physisch); fast alle nennen ihn „Opfer“ (verbal); beides direkt gegen David gerichtet.", "phase": ["Manifestationsphase"], "phase_why": ["Das Mobbing läuft seit über einem Jahr und ist gefestigt.", "Fast die ganze Klasse macht mit, auch Schüler:innen, die anfangs nicht beteiligt waren.", "Die „Norm“ hat sich verschoben: „War doch nur Spaß“ – und David nickt.", "Warnsignale: zerrissene Jacke, Fehltage, Leistungsabfall."], "praev": ["erst nach der Intervention: Präventionsprogramm für die ganze Klasse (Teil der Nachbereitung)", "ein Klassengespräch allein reicht hier nicht mehr"], "interv": ["Erstverhalten: Schutz für David sichern, die Beobachtungen der Kolleg:innen sammeln und dokumentieren, vertrauliches Gespräch mit David", "Hauptintervention: Schulleitung, Schulsozialarbeit, ggf. externe Beratung; dem Vater ehrlich antworten, das weitere Einbeziehen der Eltern mit David und der Schulsozialarbeit absprechen; Gespräche mit den Haupttäter:innen; bei gravierenden Regelverletzungen klare Grenzen; Schülerunterstützer", "Nachbereitung: regelmäßige Rückmeldung mit David, Erfolgskontrolle (wirkt es nicht: zurück zur Planung), ggf. therapeutische Hilfe"], "begr_phase": "Manifestations", "begr_cb": ["Intervention"], "begr": "das Mobbing ist seit über einem Jahr gefestigt und fast die ganze Klasse macht mit. Ohne Eingreifen mit Unterstützung von außen ändert sich nichts.", "erstes": "Davids Schutz sichern, die Beobachtungen der Kolleg:innen zusammentragen und vertraulich mit David sprechen.", "wichtig": "Wir holen sofort Schulleitung und Schulsozialarbeit dazu und gehen nach dem Drei-Phasen-Modell vor – zuerst Schutz für David, dann Gespräche mit den Haupttäter:innen."}};
+const bul = (a) => a.map((x) => "• " + x).join("\n");
+const SOL_STEPS = [
+  { t: "1 · Form", g: (d) => [["Form", val(d, "form")], ["Woran erkannt", val(d, "form_why")]],
+    s: (x) => [["Form", x.form.join(", ")], ["Woran erkannt", x.form_why]] },
+  { t: "2 · Phase", g: (d) => [["Phase", val(d, "phase")], ["Woran erkannt", val(d, "phase_why")]],
+    s: (x) => [["Phase", x.phase.join(", ")], ["Woran erkannt", bul(x.phase_why)]] },
+  { t: "3 · Prävention und Intervention", g: (d) => [["Prävention", val(d, "praev")], ["Intervention", val(d, "interv")], ["Begründung", val(d, "begr")]],
+    s: (x) => [["Prävention", bul(x.praev)], ["Intervention", bul(x.interv)], ["Begründung", `Weil sich das Mobbing in der ${x.begr_phase}phase befindet, braucht es vor allem ${x.begr_cb.join(" + ")}, denn ${x.begr}`]] },
+  { t: "4 · Handeln", g: (d) => [["Als Erstes", val(d, "erstes")], ["Wichtigste Maßnahme", val(d, "wichtig")]],
+    s: (x) => [["Als Erstes", x.erstes], ["Wichtigste Maßnahme", x.wichtig]] },
+];
+let bmSol = false, bmStep = 0;
+const kv = (rows) => rows.map(([k, v]) => `<div class="k">${k}</div><div class="v ${v ? "" : "empty"}">${v ? esc(v) : "noch leer"}</div>`).join("");
+function renderSolution(id) {
+  const d = state[id], x = LOESUNG[id];
+  let h = `<p class="sol-hint">Unser Lösungsvorschlag – andere begründete Antworten sind möglich · Schritt ${bmStep} von ${SOL_STEPS.length} (→ weiter, ← zurück)</p>`;
+  h += `<div class="sol-grid"><div class="sol-h">Gruppe · Fall ${id} ${phasePill(d)}</div><div class="sol-h s">Unser Lösungsvorschlag</div>`;
+  SOL_STEPS.forEach((st, i) => {
+    const cur = i === bmStep - 1 ? " cur" : "";
+    h += `<div class="sol-t">${st.t}</div><div class="sol-c g${cur}">${kv(st.g(d))}</div>`;
+    h += `<div class="sol-c s${cur}">${i < bmStep ? kv(st.s(x)) : '<div class="wait">wird gleich aufgedeckt …</div>'}</div>`;
+  });
+  return h + "</div>";
+}
+function renderSolCtrl() {
+  const single = bmShow !== "all";
+  const c = document.getElementById("bm-sol-ctrl");
+  c.querySelector('[data-sol="toggle"]').classList.toggle("on", bmSol && single);
+  c.querySelector('[data-sol="toggle"]').disabled = !single;
+  c.querySelector('[data-sol="prev"]').disabled = !(bmSol && single) || bmStep <= 0;
+  c.querySelector('[data-sol="next"]').disabled = !(bmSol && single) || bmStep >= SOL_STEPS.length;
+}
+function solAction(a) {
+  if (!teacher || bmShow === "all") return;
+  if (a === "toggle") { bmSol = !bmSol; bmStep = 0; }
+  else if (a === "next" && bmSol) bmStep = Math.min(SOL_STEPS.length, bmStep + 1);
+  else if (a === "prev" && bmSol) bmStep = Math.max(0, bmStep - 1);
+  renderBeamer();
+}
 function renderBeamer() {
   if (!document.body.classList.contains("beamer-on")) return;
+  if (teacher) renderSolCtrl();
   const ids = bmShow === "all" ? ["A", "B", "C"] : [bmShow];
   const grid = document.getElementById("bm-grid");
+  if (teacher && bmSol && ids.length === 1) {
+    grid.classList.remove("single"); grid.style.display = "block";
+    grid.innerHTML = renderSolution(ids[0]);
+    const cur = grid.querySelector(".sol-c.s.cur");
+    if (cur) cur.scrollIntoView({ block: "nearest", behavior: "smooth" }); else document.getElementById("beamer").scrollTop = 0;
+    document.getElementById("bm-key").style.display = "none";
+    document.querySelectorAll(".bm-tabs button[data-show]").forEach((b) => b.classList.toggle("sel", b.dataset.show === bmShow));
+    return;
+  }
+  grid.style.display = "";
   grid.classList.toggle("single", ids.length === 1);
   grid.innerHTML = ids.map((id) => {
     const d = state[id];
@@ -620,12 +739,19 @@ document.getElementById("btn-beamer").addEventListener("click", openBeamer);
 document.querySelector(".bm-tabs").addEventListener("click", (e) => {
   const b = e.target.closest("button[data-show]"); if (!b) return;
   if (b.dataset.show === "close") return closeBeamer();
+  if (bmShow !== b.dataset.show) { bmSol = false; bmStep = 0; }
   bmShow = b.dataset.show; renderBeamer();
+});
+document.getElementById("bm-sol-ctrl").addEventListener("click", (e) => {
+  const b = e.target.closest("button[data-sol]"); if (b) solAction(b.dataset.sol);
 });
 document.addEventListener("keydown", (e) => {
   if (!document.body.classList.contains("beamer-on")) return;
   const map = { "1": "A", "2": "B", "3": "C", "0": "all", "a": "A", "b": "B", "c": "C" };
-  if (map[e.key.toLowerCase()]) { bmShow = map[e.key.toLowerCase()]; renderBeamer(); }
+  if (map[e.key.toLowerCase()]) { const n = map[e.key.toLowerCase()]; if (n !== bmShow) { bmSol = false; bmStep = 0; } bmShow = n; renderBeamer(); }
+  if (teacher && e.key.toLowerCase() === "l") solAction("toggle");
+  if (teacher && (e.key === "ArrowRight" || e.key === " ")) { e.preventDefault(); solAction("next"); }
+  if (teacher && e.key === "ArrowLeft") { e.preventDefault(); solAction("prev"); }
   if (e.key === "Escape" && !document.fullscreenElement) closeBeamer();
 });
 const _renderCompare = renderCompare;
