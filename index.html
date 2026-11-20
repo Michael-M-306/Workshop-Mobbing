@@ -623,11 +623,13 @@ function applyToForm(id, data, flash) {
 
 // Phase oben angekreuzt → Wortanfang unten in der Begründung vorausfüllen (nur bei genau einer Phase; eigene Eingaben bleiben)
 const PHASE_STEM = { Explorationsphase: "Explorations", Konsolidierungsphase: "Konsolidierungs", Manifestationsphase: "Manifestations" };
+const stemText = (vals) => PHASEN.filter((p) => vals.includes(p)).map((p) => PHASE_STEM[p]).join("-/");
+const AUTO_STEMS = [[0], [1], [2], [0, 1], [0, 2], [1, 2]].map((ix) => stemText(ix.map((i) => PHASEN[i])));
 function autoBegrPhase(id, vals) {
   const cur = (state[id].begr_phase || "").trim();
-  const isAuto = cur === "" || Object.values(PHASE_STEM).includes(cur);
-  if (!isAuto || vals.length > 1) return;
-  const next = vals.length === 1 ? (PHASE_STEM[vals[0]] || "") : "";
+  const isAuto = cur === "" || AUTO_STEMS.includes(cur);
+  if (!isAuto || vals.length > 2) return;
+  const next = stemText(vals);
   if (next === cur) return;
   const inp = wsEl(id).querySelector('input.inline[data-field="begr_phase"]');
   if (inp) inp.value = next;
@@ -677,10 +679,12 @@ function val(d, k) {
   return Array.isArray(v) ? v.join(", ") : (v || "").trim();
 }
 function phasePill(d) {
-  const p = (d.phase || [])[0] || "";
-  const cls = p.startsWith("Explor") ? "g" : p.startsWith("Konsol") ? "a" : p.startsWith("Manif") ? "r" : "";
-  const name = { g: "Exploration", a: "Konsolidierung", r: "Manifestation" }[cls] || p;
-  return p ? `<span class="pill phase ${cls}" style="border-width:1px">${esc(name)}</span>` : "";
+  const sel = PHASEN.filter((x) => (d.phase || []).includes(x));
+  if (!sel.length) return "";
+  const last = sel[sel.length - 1];
+  const cls = last.startsWith("Explor") ? "g" : last.startsWith("Konsol") ? "a" : "r";
+  const name = sel.map((x) => x.replace(/sphase$/, "")).join("/");
+  return `<span class="pill phase ${cls}" style="border-width:1px">${esc(name)}</span>`;
 }
 function renderCompare() {
   document.getElementById("cmp").innerHTML = ["A", "B", "C"].map((id) => {
