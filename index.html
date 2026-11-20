@@ -29,6 +29,7 @@
   .sub { color: var(--muted); margin: 0 0 18px; }
   .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; margin: 0 0 16px; }
   .card.tint { background: #EEF3FA; border-color: #2E5496; }
+  a.inlink { color: var(--blue); font-weight: 700; text-decoration: underline; cursor: pointer; }
   .grid3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
   .grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
   @media (max-width: 800px) { .grid3, .grid2 { grid-template-columns: 1fr; } h2 { font-size: 24px; } }
@@ -114,7 +115,7 @@
   .bm-col .pill { font-size: 20px; padding: 3px 14px; }
   .bm-col .k { font-size: 16px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); font-weight: 700; margin-top: 12px; }
   .bm-col .v { font-size: 23px; line-height: 1.35; white-space: pre-wrap; }
-  #bm-grid.single .bm-col .v { font-size: 30px; }
+  #bm-grid.single .bm-col .v { font-size: 26px; }
   #bm-grid.single .bm-col h3 { font-size: 36px; }
   .bm-col .v.empty { color: #a0a6b0; font-style: italic; }
   #beamer .key { font-size: 26px; margin-top: 18px; }
@@ -123,6 +124,9 @@
   .bm-sol-ctrl button { font-size: 18px; padding: 8px 14px; }
   .bm-sol-ctrl button.on { background: var(--green); border-color: var(--green); }
   .bm-sol-ctrl button:disabled { opacity: .45; cursor: default; }
+  #bm-fall { background: #F4F7FB; border: 2px solid var(--line); border-radius: 14px; padding: 16px 22px; margin: 0 0 14px; }
+  #bm-fall h3 { font-size: 30px; margin: 0 0 8px; }
+  #bm-fall p { font-size: 25px; line-height: 1.4; margin: 0 0 10px; }
   .sol-hint { text-align: center; color: var(--muted); font-size: 18px; margin: 0 0 12px; }
   .sol-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0 18px; max-width: 1500px; margin: 0 auto; }
   .sol-h { font-size: 26px; font-weight: 700; color: var(--blue); padding: 6px 4px 10px; }
@@ -274,11 +278,12 @@
       <div class="card"><b style="color:var(--blue)">1 · Erstverhalten</b>
         <ul><li>Situation abbrechen, Opfer schützen</li><li>aufklären und bewerten, ob es Mobbing ist</li><li>Erstschutz sichern, Vertrauen aufbauen</li></ul></div>
       <div class="card"><b style="color:var(--blue)">2 · Hauptintervention</b>
-        <ul><li>Vorgehen planen</li><li>Kooperationspartner hinzuziehen (Kolleg:innen, Schulsozialarbeit, Schulleitung, Schulpsychologie)</li><li>Eltern situationsbedingt und in Absprache mit dem Kind und der Schulsozialarbeit einbeziehen</li><li>Gespräche mit den Beteiligten</li><li>Schülerunterstützer hinzuziehen (die Klasse nur mit Einverständnis des Opfers)</li><li>Aufarbeitung eng begleiten</li></ul></div>
+        <ul><li>Vorgehen planen</li><li>Kooperationspartner hinzuziehen (Kolleg:innen, Schulsozialarbeit, Schulleitung, <a href="#infos" class="inlink" data-open="schulpsy">Schulpsychologie</a>)</li><li>Eltern situationsbedingt und in Absprache mit dem Kind und der Schulsozialarbeit einbeziehen</li><li>Gespräche mit den Beteiligten</li><li>Schülerunterstützer hinzuziehen (die Klasse nur mit Einverständnis des Opfers)</li><li>Aufarbeitung eng begleiten</li></ul></div>
       <div class="card"><b style="color:var(--blue)">3 · Nachbereitung / Erfolgskontrolle</b>
         <ul><li>Maßnahmen überprüfen und Nachhaltigkeit sichern (wirkt es nicht: zurück zur Planung)</li><li>präventive Anschlussmaßnahmen</li></ul></div>
     </div>
-    <details class="hilfe-d" style="margin:10px 0"><summary>Mehr zur Schulpsychologie (antippen)</summary>
+    <div class="card" id="schulpsy-card" style="margin-top:12px">
+    <details class="hilfe-d" id="schulpsy"><summary>Mehr zur Schulpsychologie (antippen)</summary>
       <ul>
         <li>Lehrkräfte können sich direkt melden – ohne Wissen oder Zustimmung Dritter, also auch ohne Schüler:in oder Eltern.</li>
         <li>Sie berät ausdrücklich auch zu Mobbing, Gewaltprävention und Klassenklima und kann im Unterricht hospitieren.</li>
@@ -289,6 +294,7 @@
       </ul>
       <p class="src">Quellen: Stimme aus der Praxis „Schulpsychologische Beratung“ (20.11.2026); <a href="https://bildungsportal-niedersachsen.de/schulpsychologie/" target="_blank" rel="noopener">Bildungsportal Niedersachsen: Schulpsychologie</a></p>
     </details>
+    </div>
     <div class="key">Merksätze: Opferschutz geht vor · Nicht allein handeln · Nicht bloßstellen</div>
     <p class="src">Quelle: Wachs, S., Hess, M., Scheithauer, H. &amp; Schubarth, W. (2016). Mobbing an Schulen: Erkennen – Handeln – Vorbeugen. Kohlhammer. S. 18–19, 23, 24, 29, 31–38, 63–64, 82–84, 104–118. Phasen nach Schäfer (2003), zit. n. Wachs et al. (2016), S. 23.</p>
   </section>
@@ -349,11 +355,13 @@
       <button data-show="close" class="ghost">✕ Schließen</button>
     </div>
     <div class="bm-sol-ctrl" id="bm-sol-ctrl" hidden>
+      <button data-sol="fall" title="Taste F">Fall zeigen</button>
       <button data-sol="toggle" title="Taste L">Lösungsvorschlag</button>
       <button data-sol="prev" class="ghost" title="Pfeil links">◀</button>
       <button data-sol="next" title="Pfeil rechts / Leertaste">Nächster Schritt ▶</button>
     </div>
   </div>
+  <div id="bm-fall" hidden></div>
   <div id="bm-grid"></div>
   <div class="key" id="bm-key">Je früher wir hinschauen, desto eher gelingt Prävention.</div>
 </div>
@@ -613,6 +621,18 @@ function applyToForm(id, data, flash) {
   });
 }
 
+// Phase oben angekreuzt → Wortanfang unten in der Begründung vorausfüllen (nur bei genau einer Phase; eigene Eingaben bleiben)
+const PHASE_STEM = { Explorationsphase: "Explorations", Konsolidierungsphase: "Konsolidierungs", Manifestationsphase: "Manifestations" };
+function autoBegrPhase(id, vals) {
+  const cur = (state[id].begr_phase || "").trim();
+  const isAuto = cur === "" || Object.values(PHASE_STEM).includes(cur);
+  if (!isAuto || vals.length > 1) return;
+  const next = vals.length === 1 ? (PHASE_STEM[vals[0]] || "") : "";
+  if (next === cur) return;
+  const inp = wsEl(id).querySelector('input.inline[data-field="begr_phase"]');
+  if (inp) inp.value = next;
+  queueSave(id, "begr_phase", next, 0);
+}
 // Eingaben speichern (Textfelder verzögert, Kästchen sofort)
 const timers = {};
 function queueSave(id, field, value, delay) {
@@ -638,6 +658,7 @@ for (const id of ["A", "B", "C"]) {
     inp.parentElement.classList.toggle("on", inp.checked);
     const vals = [...box.querySelectorAll("input:checked")].map((i) => i.value);
     queueSave(id, box.dataset.field, vals, 0);
+    if (box.dataset.field === "phase") autoBegrPhase(id, vals);
   });
 }
 
@@ -676,7 +697,7 @@ renderCompare();
 const BM_FIELDS = [["form", "Form"], ["phase_why", "Woran erkennt man die Phase?"], ["begr", "Begründung"], ["wichtig", "Wichtigste Maßnahme"]];
 let bmShow = "all";
 // Lösungsvorschlag (nur im Lehrkraft-Modus sichtbar)
-const LOESUNG = {"A": {"form": ["verbal", "direkt"], "form_why": "Sprüche über Brille, Turnschuhe und Frisur = Verspotten/Beleidigen (verbal); direkt an die Betroffenen gerichtet, in den Pausen und vor dem Unterricht.", "phase": ["Explorationsphase"], "phase_why": ["Die Ziele wechseln (Marie, Max, Finn) – Noah und seine Freunde testen aus.", "Wer sich wehrt, wird in Ruhe gelassen.", "Der Fokus auf Finn besteht erst seit einer Woche.", "Warnsignal: Finn wirkt unsicher und möchte sich umsetzen."], "praev": ["Klassenregeln für einen respektvollen Umgang gemeinsam erarbeiten, Klassenrat", "soziales Lernen / Präventionsprogramm mit der ganzen Klasse"], "interv": ["Sprüche sofort und klar ansprechen (Haltung zeigen)", "Finn ein vertrauliches Gespräch anbieten, Sitzplatzwunsch ernst nehmen – Umsetzen allein löst aber nichts", "kurzes Gespräch mit Noah & Co., weiter beobachten"], "begr_phase": "Explorations", "begr_cb": ["Prävention"], "begr": "Noah und seine Freunde testen noch aus und es gibt noch kein festes Opfer. Mit klaren Regeln und der ganzen Klasse lässt sich das noch stoppen.", "erstes": "Die nächsten Sprüche sofort unterbrechen und klar Stellung beziehen; Finn ein vertrauliches Gespräch anbieten.", "wichtig": "Wir sprechen Sprüche ab sofort jedes Mal klar an und erarbeiten mit der 5c gemeinsame Regeln für einen respektvollen Umgang."}, "B": {"form": ["relational", "Cybermobbing", "direkt", "indirekt"], "form_why": "Ausschluss aus der Klassengruppe und bei Gruppenarbeiten (relational, direkt); Screenshots weiterleiten und lästern (Cybermobbing, indirekt – hinter Hannahs Rücken).", "phase": ["Konsolidierungsphase"], "phase_why": ["Ein Opfer ist ausgewählt (Hannah).", "Lea und Mira haben angefangen, inzwischen machen immer mehr mit.", "Soziale Herabsetzung durch Ausschluss und Screenshots.", "Warnsignale: Hannah steht in den Pausen allein, wird bei Gruppenarbeiten gemieden, meldet sich kaum noch.", "Diskussionspunkt: erst seit den Herbstferien – gerade deshalb früh handeln."], "praev": ["Regeln für Klassenchats vereinbaren", "Cybermobbing und Medienkompetenz thematisieren", "Zuschauende stärken"], "interv": ["Erstverhalten: vertrauliches Gespräch mit Hannah, Schutz, feste Ansprechperson; die Hinweisgeberin bleibt anonym", "Hauptintervention: mit Kolleg:innen / Schulsozialarbeit planen; Gespräche mit Lea und Mira, ohne bloßzustellen; Eltern in Absprache mit Hannah und der Schulsozialarbeit", "Schülerunterstützer für Hannah; die Klasse nur mit ihrem Einverständnis einbeziehen"], "begr_phase": "Konsolidierungs", "begr_cb": ["Prävention", "Intervention"], "begr": "Hannah ist als Opfer ausgewählt und immer mehr machen mit. Sie braucht jetzt Schutz, Prävention in der Klasse allein reicht nicht mehr.", "erstes": "Ein vertrauliches Gespräch mit Hannah führen – ohne die Schülerin zu nennen, die es erzählt hat.", "wichtig": "Wir sprechen vertraulich mit Hannah, sichern ihr Schutz zu und planen das weitere Vorgehen mit der Schulsozialarbeit – die Hinweisgeberin bleibt anonym."}, "C": {"form": ["physisch", "verbal", "direkt"], "form_why": "Schubsen, Rucksack auskippen, zerrissene Jacke (physisch); fast alle nennen ihn „Opfer“ (verbal); beides direkt gegen David gerichtet.", "phase": ["Manifestationsphase"], "phase_why": ["Das Mobbing läuft seit über einem Jahr und ist gefestigt.", "Fast die ganze Klasse macht mit, auch Schüler:innen, die anfangs nicht beteiligt waren.", "Die „Norm“ hat sich verschoben: „War doch nur Spaß“ – und David nickt.", "Warnsignale: zerrissene Jacke, Fehltage, Leistungsabfall."], "praev": ["erst nach der Intervention: Präventionsprogramm für die ganze Klasse (Teil der Nachbereitung)", "ein Klassengespräch allein reicht hier nicht mehr"], "interv": ["Erstverhalten: Schutz für David sichern, die Beobachtungen der Kolleg:innen sammeln und dokumentieren, vertrauliches Gespräch mit David", "Hauptintervention: Schulleitung, Schulsozialarbeit, Schulpsychologie (berät auch Lehrkräfte allein, kann in die Klasse kommen); dem Vater ehrlich antworten, das weitere Einbeziehen der Eltern mit David und der Schulsozialarbeit absprechen; Gespräche mit den Haupttäter:innen; bei gravierenden Regelverletzungen klare Grenzen; Schülerunterstützer", "Nachbereitung: regelmäßige Rückmeldung mit David, Erfolgskontrolle (wirkt es nicht: zurück zur Planung), ggf. therapeutische Hilfe"], "begr_phase": "Manifestations", "begr_cb": ["Intervention"], "begr": "das Mobbing ist seit über einem Jahr gefestigt und fast die ganze Klasse macht mit. Ohne Eingreifen mit Unterstützung von außen ändert sich nichts.", "erstes": "Davids Schutz sichern, die Beobachtungen der Kolleg:innen zusammentragen und vertraulich mit David sprechen.", "wichtig": "Wir holen sofort Schulleitung und Schulsozialarbeit dazu und gehen nach dem Drei-Phasen-Modell vor – zuerst Schutz für David, dann Gespräche mit den Haupttäter:innen."}};
+const LOESUNG = {"A": {"form": ["verbal", "direkt"], "form_why": "Sprüche über Brille, Turnschuhe und Frisur = Verspotten/Beleidigen (verbal); direkt an die Betroffenen gerichtet, in den Pausen und vor dem Unterricht.", "phase": ["Explorationsphase"], "phase_why": ["Die Ziele wechseln (Marie, Max, Finn) – Noah und seine Freunde testen aus.", "Wer sich wehrt, wird in Ruhe gelassen.", "Der Fokus auf Finn besteht erst seit einer Woche.", "Warnsignal: Finn wirkt unsicher und möchte sich umsetzen."], "praev": ["Klassenregeln für einen respektvollen Umgang gemeinsam erarbeiten, Klassenrat", "soziales Lernen / Präventionsprogramm mit der ganzen Klasse"], "interv": ["Sprüche sofort und klar ansprechen (Haltung zeigen)", "Finn ein vertrauliches Gespräch anbieten, Sitzplatzwunsch ernst nehmen – Umsetzen allein löst aber nichts", "kurzes Gespräch mit Noah & Co., weiter beobachten"], "begr_phase": "Explorations", "begr_cb": ["Prävention"], "begr": "Noah und seine Freunde testen noch aus und es gibt noch kein festes Opfer. Mit klaren Regeln und der ganzen Klasse lässt sich das noch stoppen.", "erstes": "Die nächsten Sprüche sofort unterbrechen und klar Stellung beziehen; Finn ein vertrauliches Gespräch anbieten.", "wichtig": "Wir sprechen Sprüche ab sofort jedes Mal klar an und erarbeiten mit der 5c gemeinsame Regeln für einen respektvollen Umgang."}, "B": {"form": ["relational", "Cybermobbing", "direkt", "indirekt"], "form_why": "Ausschluss aus der Klassengruppe und bei Gruppenarbeiten (relational, direkt); Screenshots weiterleiten und lästern (Cybermobbing, indirekt – hinter Hannahs Rücken).", "phase": ["Konsolidierungsphase"], "phase_why": ["Ein Opfer ist ausgewählt (Hannah).", "Lea und Mira haben angefangen, inzwischen machen immer mehr mit.", "Soziale Herabsetzung durch Ausschluss und Screenshots.", "Warnsignale: Hannah steht in den Pausen allein, wird bei Gruppenarbeiten gemieden, meldet sich kaum noch.", "Diskussionspunkt: erst seit den Herbstferien – gerade deshalb früh handeln."], "praev": ["Regeln für Klassenchats vereinbaren", "Cybermobbing und Medienkompetenz thematisieren", "Zuschauende stärken"], "interv": ["Erstverhalten: vertrauliches Gespräch mit Hannah, Schutz, feste Ansprechperson; die Hinweisgeberin bleibt anonym", "Hauptintervention: mit Kolleg:innen / Schulsozialarbeit planen; Gespräche mit Lea und Mira, ohne bloßzustellen; Eltern in Absprache mit Hannah und der Schulsozialarbeit", "Schülerunterstützer für Hannah; die Klasse nur mit ihrem Einverständnis einbeziehen"], "begr_phase": "Konsolidierungs", "begr_cb": ["Prävention", "Intervention"], "begr": "Hannah ist als Opfer ausgewählt und braucht jetzt Schutz. Weil das Mobbing aber erst seit Kurzem läuft, kann Prävention mit der ganzen Klasse die Ausbreitung noch stoppen.", "erstes": "Ein vertrauliches Gespräch mit Hannah führen – ohne die Schülerin zu nennen, die es erzählt hat.", "wichtig": "Wir sprechen vertraulich mit Hannah, sichern ihr Schutz zu und planen das weitere Vorgehen mit der Schulsozialarbeit – die Hinweisgeberin bleibt anonym."}, "C": {"form": ["physisch", "verbal", "direkt"], "form_why": "Schubsen, Rucksack auskippen, zerrissene Jacke (physisch); fast alle nennen ihn „Opfer“ (verbal); beides direkt gegen David gerichtet.", "phase": ["Manifestationsphase"], "phase_why": ["Das Mobbing läuft seit über einem Jahr und ist gefestigt.", "Fast die ganze Klasse macht mit, auch Schüler:innen, die anfangs nicht beteiligt waren.", "Die „Norm“ hat sich verschoben: „War doch nur Spaß“ – und David nickt.", "Warnsignale: zerrissene Jacke, Fehltage, Leistungsabfall."], "praev": ["erst nach der Intervention: Präventionsprogramm für die ganze Klasse (Teil der Nachbereitung)", "ein Klassengespräch allein reicht hier nicht mehr"], "interv": ["Erstverhalten: Schutz für David sichern, die Beobachtungen der Kolleg:innen sammeln und dokumentieren, vertrauliches Gespräch mit David", "Hauptintervention: Schulleitung, Schulsozialarbeit, Schulpsychologie (berät auch Lehrkräfte allein, kann in die Klasse kommen); dem Vater ehrlich antworten, das weitere Einbeziehen der Eltern mit David und der Schulsozialarbeit absprechen; Gespräche mit den Haupttäter:innen; bei gravierenden Regelverletzungen klare Grenzen; Schülerunterstützer", "Nachbereitung: regelmäßige Rückmeldung mit David, Erfolgskontrolle (wirkt es nicht: zurück zur Planung), ggf. therapeutische Hilfe"], "begr_phase": "Manifestations", "begr_cb": ["Intervention"], "begr": "das Mobbing ist seit über einem Jahr gefestigt und fast die ganze Klasse macht mit. Ohne Eingreifen mit Unterstützung von außen ändert sich nichts.", "erstes": "Davids Schutz sichern, die Beobachtungen der Kolleg:innen zusammentragen und vertraulich mit David sprechen.", "wichtig": "Wir holen sofort Schulleitung und Schulsozialarbeit dazu und gehen nach dem Drei-Phasen-Modell vor – zuerst Schutz für David, dann Gespräche mit den Haupttäter:innen."}};
 const bul = (a) => a.map((x) => "• " + x).join("\n");
 const SOL_STEPS = [
   { t: "1 · Form", g: (d) => [["Form", val(d, "form")], ["Woran erkannt", val(d, "form_why")]],
@@ -688,7 +709,7 @@ const SOL_STEPS = [
   { t: "4 · Handeln", g: (d) => [["Als Erstes", val(d, "erstes")], ["Wichtigste Maßnahme", val(d, "wichtig")]],
     s: (x) => [["Als Erstes", x.erstes], ["Wichtigste Maßnahme", x.wichtig]] },
 ];
-let bmSol = false, bmStep = 0;
+let bmSol = false, bmStep = 0, bmFall = false;
 const kv = (rows) => rows.map(([k, v]) => `<div class="k">${k}</div><div class="v ${v ? "" : "empty"}">${v ? esc(v) : "noch leer"}</div>`).join("");
 function renderSolution(id) {
   const d = state[id], x = LOESUNG[id];
@@ -706,12 +727,16 @@ function renderSolCtrl() {
   const c = document.getElementById("bm-sol-ctrl");
   c.querySelector('[data-sol="toggle"]').classList.toggle("on", bmSol && single);
   c.querySelector('[data-sol="toggle"]').disabled = !single;
+  c.querySelector('[data-sol="fall"]').classList.toggle("on", bmFall && single);
+  c.querySelector('[data-sol="fall"]').textContent = bmFall && single ? "Fall ausblenden" : "Fall zeigen";
+  c.querySelector('[data-sol="fall"]').disabled = !single;
   c.querySelector('[data-sol="prev"]').disabled = !(bmSol && single) || bmStep <= 0;
   c.querySelector('[data-sol="next"]').disabled = !(bmSol && single) || bmStep >= SOL_STEPS.length;
 }
 function solAction(a) {
   if (!teacher || bmShow === "all") return;
-  if (a === "toggle") { bmSol = !bmSol; bmStep = 0; }
+  if (a === "fall") bmFall = !bmFall;
+  else if (a === "toggle") { bmSol = !bmSol; bmStep = 0; }
   else if (a === "next" && bmSol) bmStep = Math.min(SOL_STEPS.length, bmStep + 1);
   else if (a === "prev" && bmSol) bmStep = Math.max(0, bmStep - 1);
   renderBeamer();
@@ -721,6 +746,10 @@ function renderBeamer() {
   if (teacher) renderSolCtrl();
   const ids = bmShow === "all" ? ["A", "B", "C"] : [bmShow];
   const grid = document.getElementById("bm-grid");
+  const fb = document.getElementById("bm-fall");
+  const showFall = teacher && bmFall && ids.length === 1;
+  fb.hidden = !showFall;
+  if (showFall) { const f = FAELLE[ids[0]]; fb.innerHTML = `<h3>Fall ${ids[0]} · ${esc(f.klasse)}: ${esc(f.titel)}</h3>` + f.text.map((t) => `<p>${esc(t)}</p>`).join(""); }
   if (teacher && bmSol && ids.length === 1) {
     grid.classList.remove("single"); grid.style.display = "block";
     grid.innerHTML = renderSolution(ids[0]);
@@ -735,7 +764,7 @@ function renderBeamer() {
   grid.innerHTML = ids.map((id) => {
     const d = state[id];
     return `<div class="bm-col"><h3>Fall ${id} · ${FAELLE[id].klasse} ${phasePill(d)}</h3>` +
-      BM_FIELDS.map(([k, l]) => { const v = val(d, k);
+      (ids.length === 1 ? LABELS : BM_FIELDS).map(([k, l]) => { const v = val(d, k);
         return `<div class="k">${l}</div><div class="v ${v ? "" : "empty"}">${v ? esc(v) : "noch leer"}</div>`; }).join("") + "</div>";
   }).join("");
   document.getElementById("bm-key").style.display = bmShow === "all" ? "block" : "none";
@@ -754,7 +783,7 @@ document.getElementById("btn-beamer").addEventListener("click", openBeamer);
 document.querySelector(".bm-tabs").addEventListener("click", (e) => {
   const b = e.target.closest("button[data-show]"); if (!b) return;
   if (b.dataset.show === "close") return closeBeamer();
-  if (bmShow !== b.dataset.show) { bmSol = false; bmStep = 0; }
+  if (bmShow !== b.dataset.show) { bmSol = false; bmStep = 0; bmFall = false; }
   bmShow = b.dataset.show; renderBeamer();
 });
 document.getElementById("bm-sol-ctrl").addEventListener("click", (e) => {
@@ -763,11 +792,19 @@ document.getElementById("bm-sol-ctrl").addEventListener("click", (e) => {
 document.addEventListener("keydown", (e) => {
   if (!document.body.classList.contains("beamer-on")) return;
   const map = { "1": "A", "2": "B", "3": "C", "0": "all", "a": "A", "b": "B", "c": "C" };
-  if (map[e.key.toLowerCase()]) { const n = map[e.key.toLowerCase()]; if (n !== bmShow) { bmSol = false; bmStep = 0; } bmShow = n; renderBeamer(); }
+  if (map[e.key.toLowerCase()]) { const n = map[e.key.toLowerCase()]; if (n !== bmShow) { bmSol = false; bmStep = 0; bmFall = false; } bmShow = n; renderBeamer(); }
   if (teacher && e.key.toLowerCase() === "l") solAction("toggle");
+  if (teacher && e.key.toLowerCase() === "f") solAction("fall");
   if (teacher && (e.key === "ArrowRight" || e.key === " ")) { e.preventDefault(); solAction("next"); }
   if (teacher && e.key === "ArrowLeft") { e.preventDefault(); solAction("prev"); }
   if (e.key === "Escape" && !document.fullscreenElement) closeBeamer();
+});
+document.addEventListener("click", (e) => {
+  const a = e.target.closest("a.inlink[data-open]"); if (!a) return;
+  e.preventDefault();
+  const d = document.getElementById(a.dataset.open); if (!d) return;
+  d.open = true;
+  (document.getElementById(a.dataset.open + "-card") || d).scrollIntoView({ block: "center", behavior: "smooth" });
 });
 const _renderCompare = renderCompare;
 renderCompare = function () { _renderCompare(); renderBeamer(); renderModeration(); renderFertig(); };
