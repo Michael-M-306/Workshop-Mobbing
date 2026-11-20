@@ -59,7 +59,7 @@
   .checks .sep { flex-basis: 100%; height: 0; }
   textarea, input.inline { width: 100%; font: inherit; font-size: 16px; border: 1px solid #b9c4d6; border-radius: 8px; padding: 9px 10px; background: #fff; color: var(--ink); resize: vertical; }
   textarea:focus, input.inline:focus { outline: 3px solid #b8cdee; border-color: var(--blue2); }
-  input.inline { width: 200px; display: inline-block; padding: 5px 8px; }
+  input.inline { width: 200px; max-width: 100%; display: inline-block; padding: 5px 8px; }
   textarea.r3 { min-height: 90px; } textarea.r5 { min-height: 140px; } textarea.r2 { min-height: 62px; }
   .flash { animation: flash 1.2s ease-out; }
   @keyframes flash { from { background: #fff4c2; } to { background: #fff; } }
@@ -617,10 +617,21 @@ function applyToForm(id, data, flash) {
     } else if (document.activeElement !== el) {
       const v = data[field] ?? "";
       if (el.value !== v) { el.value = v; if (flash) { el.classList.remove("flash"); void el.offsetWidth; el.classList.add("flash"); } }
+      if (el.matches("input.inline")) sizeInline(el);
     }
   });
 }
 
+// Inline-Feld (Phase in der Begründung) wächst mit dem Text
+let _mctx = null;
+function sizeInline(el) {
+  if (!el) return;
+  if (!_mctx) _mctx = document.createElement("canvas").getContext("2d");
+  const cs = getComputedStyle(el);
+  _mctx.font = `${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
+  const txt = el.value || el.placeholder || "";
+  el.style.width = Math.max(200, Math.ceil(_mctx.measureText(txt).width) + 28) + "px";
+}
 // Phase oben angekreuzt → Wortanfang unten in der Begründung vorausfüllen (nur bei genau einer Phase; eigene Eingaben bleiben)
 const PHASE_STEM = { Explorationsphase: "Explorations", Konsolidierungsphase: "Konsolidierungs", Manifestationsphase: "Manifestations" };
 const stemText = (vals) => PHASEN.filter((p) => vals.includes(p)).map((p) => PHASE_STEM[p]).join("-/");
@@ -632,7 +643,7 @@ function autoBegrPhase(id, vals) {
   const next = stemText(vals);
   if (next === cur) return;
   const inp = wsEl(id).querySelector('input.inline[data-field="begr_phase"]');
-  if (inp) inp.value = next;
+  if (inp) { inp.value = next; sizeInline(inp); }
   queueSave(id, "begr_phase", next, 0);
 }
 // Eingaben speichern (Textfelder verzögert, Kästchen sofort)
@@ -647,6 +658,7 @@ for (const id of ["A", "B", "C"]) {
   const ws = wsEl(id);
   ws.addEventListener("input", (e) => {
     const el = e.target;
+    if (el.matches("input.inline")) sizeInline(el);
     if (el.matches("textarea, input.inline")) queueSave(id, el.dataset.field, el.value, 700);
   });
   ws.addEventListener("focusout", (e) => {
