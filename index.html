@@ -470,7 +470,7 @@ function fallPage(id) {
       <textarea class="r2" data-field="erstes"></textarea>
     </div>
 
-    <div class="q">Unsere wichtigste Maßnahme <span style="font-weight:400">(1 Satz – die stellt ihr vor)</span></div>
+    <div class="q">Unsere wichtigste Maßnahme <span style="font-weight:400">(in 1 Satz)</span></div>
     <div class="box"><textarea class="r2" data-field="wichtig"></textarea></div>
 
     <div class="q">Notizen</div>
@@ -722,7 +722,7 @@ const SOL_STEPS = [
     s: (x) => [["Phase", x.phase.join(", ")], ["Woran erkannt", bul(x.phase_why)]] },
   { t: "3 · Prävention und Intervention", g: (d) => [["Prävention", val(d, "praev")], ["Intervention", val(d, "interv")], ["Begründung", val(d, "begr")]],
     s: (x) => [["Prävention", bul(x.praev)], ["Intervention", bul(x.interv)], ["Begründung", `Weil sich das Mobbing in der ${x.begr_phase}phase befindet, braucht es vor allem ${x.begr_cb.join(" + ")}, denn ${x.begr}`]] },
-  { t: "4 · Handeln", g: (d) => [["Als Erstes", val(d, "erstes")], ["Wichtigste Maßnahme", val(d, "wichtig")]],
+  { t: "Als Erstes + wichtigste Maßnahme", g: (d) => [["Als Erstes", val(d, "erstes")], ["Wichtigste Maßnahme", val(d, "wichtig")]],
     s: (x) => [["Als Erstes", x.erstes], ["Wichtigste Maßnahme", x.wichtig]] },
 ];
 let bmSol = false, bmStep = 0, bmFall = false;
